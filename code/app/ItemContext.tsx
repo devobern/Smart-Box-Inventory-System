@@ -1,16 +1,17 @@
 import React, { createContext, useContext, useState } from 'react';
+import { Item } from '@/app/types/item';
 
 type ItemContextType = {
-    items: string[];
-    addItem: (item: string) => void;
+    items: Item[];
+    addItem: (item: Item) => void;
 };
 
 const ItemContext = createContext<ItemContextType | undefined>(undefined);
 
 export function ItemProvider({ children }: { children: React.ReactNode }) {
-    const [items, setItems] = useState<string[]>([]);
+    const [items, setItems] = useState<Item[]>([]);
 
-    const addItem = (item: string) => {
+    const addItem = (item: Item) => {
         setItems((prevItems) => [...prevItems, item]);
     };
 
