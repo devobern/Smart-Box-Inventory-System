@@ -218,12 +218,12 @@ export default function Index() {
                     <Swipeable
                         renderLeftActions={() => (
                             <TouchableOpacity style={[styles.actionButton, styles.editButton]} onPress={() => onEdit(item.id)}>
-                                <Text style={styles.actionText}>Modifica</Text>
+                                <Text style={styles.actionText}>Edit</Text>
                             </TouchableOpacity>
                         )}
                         renderRightActions={() => (
                             <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => onDelete(item.id)}>
-                                <Text style={styles.actionText}>Elimina</Text>
+                                <Text style={styles.actionText}>Delete</Text>
                             </TouchableOpacity>
                         )}
                         overshootLeft={false}
