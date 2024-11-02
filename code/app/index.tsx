@@ -12,7 +12,7 @@ import { box } from "./types/box";
 import { category } from "@/app/types/category";
 import { location } from "@/app/types/location";
 import {Link} from "@react-navigation/native";
-import { ListItem } from "@react-native-material/core";
+import { List } from 'react-native-paper';
 import { router } from "expo-router";
 
 const styles = StyleSheet.create({
@@ -136,12 +136,12 @@ export default function Index() {
                 data={boxes}
                 keyExtractor={(item, index) => `${item.id}`}
                 renderItem={({ item }) => (
-                    <ListItem
+                    <List.Item
                         onPress={() => router.push(`/boxes/details?id=${item.id}`)}
                         title={item.name}
-                        secondaryText={item.description}
-                        leading={<Image source={require("@/assets/images/box.png")} style={{ width: 24, height: 24 }} />}
-                        trailing={<Image source={require("@/assets/images/arrow_forward_ios.png")} style={{ width: 24, height: 24 }} />}
+                        description={item.description}
+                        left={() => <Image source={require("@/assets/images/box.png")} style={{ width: 24, height: 24 }} />}
+                        right={() => <Image source={require("@/assets/images/arrow_forward_ios.png")} style={{ width: 24, height: 24 }} />}
                     />
                 )}
             />
