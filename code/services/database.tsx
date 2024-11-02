@@ -383,11 +383,11 @@ export const getItem = async (id: number): Promise<object | null> => {
  * Retrieves all rows in the `item` table.
  * @returns An array of item objects or null if the table is empty.
  */
-export const getItems = async (): Promise<unknown[] | null> => {
+export const getItems = async (boxId: number): Promise<unknown[] | null> => {
     const db = await openDatabase();
-    const statement = await db.prepareAsync(`SELECT * FROM item`);
+    const statement = await db.prepareAsync(`SELECT * FROM item WHERE boxId = $boxId`);
     try {
-        const result = await statement.executeAsync();
+        const result = await statement.executeAsync({ $boxId: boxId });
         return await result.getAllAsync() ?? null;
     } finally {
         await statement.finalizeAsync();
