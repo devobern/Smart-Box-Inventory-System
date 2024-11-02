@@ -32,12 +32,30 @@ export default function Index() {
         { name: 'Automotive Parts' },
     ];
 
-    const addPresetCategories = async () => {
+    let categories=[] as category[];
+    db.getCategories().then((b) => {
+        if (b !== null) {
+            alert(b.length);
+            b.forEach((uCategory) => {
+                let category = uCategory as category;
+                categories.push(category);
+            });
+            alert("categories:"+categories.length);
+            if (categories.length == 0){
+                alert("Debug");
+                addPresetCategories();
+            }
+        }
+    });
+
+
+    const addPresetCategories = () => {
         for (let category of presetCategories) {
             const id = db.addCategory(category.name);
         };
     }
-    addPresetCategories();
+
+
 
   return (
     <View
