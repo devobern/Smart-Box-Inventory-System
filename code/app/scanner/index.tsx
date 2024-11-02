@@ -58,7 +58,7 @@ export default function Index() {
      */
     const handleSuccessfulScan = () => {
         // @ts-ignore
-        router.push(`/boxes/detail?id=${scannedText}`);
+        router.push(`/boxes/details?id=${scannedText}`);
     }
 
     /**

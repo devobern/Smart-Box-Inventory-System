@@ -14,6 +14,7 @@ import * as db from "../services/database";
 import { box } from "./types/box";
 import { category } from "@/app/types/category";
 import { location } from "@/app/types/location";
+import {Link} from "@react-navigation/native";
 
 const styles = StyleSheet.create({
     item: {
@@ -154,6 +155,9 @@ export default function Index() {
                 />
             </View>
             <FloatingActionButton route="/boxes/add" />
+            <Link to="/scanner">
+                Go To Scanner
+            </Link>
         </View>
     );
 }
