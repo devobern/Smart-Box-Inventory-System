@@ -8,8 +8,8 @@ import {
     FlatList,
     Image,
     TouchableOpacity,
+    Text, Alert
 } from "react-native";
-import BoxListItem from "@/components/BoxListItem";
 import * as db from "../services/database";
 import { box } from "./types/box";
 import { category } from "@/app/types/category";
@@ -17,6 +17,7 @@ import { location } from "@/app/types/location";
 import {Link, useFocusEffect} from "@react-navigation/native";
 import {Ionicons} from "@expo/vector-icons";
 import { List } from "react-native-paper";
+import {GestureHandlerRootView, Swipeable} from "react-native-gesture-handler";
 
 const styles = StyleSheet.create({
     item: {
@@ -61,13 +62,64 @@ const styles = StyleSheet.create({
         bottom: 30,
         left: 30,
         alignItems: "center",
-    }
+    },
+    actionButton: {
+        justifyContent: "center",
+        alignItems: "center",
+        width: 80,
+        height: "100%",
+    },
+    editButton: {
+        backgroundColor: "#4CAF50",
+    },
+    deleteButton: {
+        backgroundColor: "#F44336",
+    },
+    actionText: {
+        color: "white",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    listItemContainer: {
+        backgroundColor: "white",
+    },
 });
 
 export default function Index() {
     const [boxes, setBoxes] = useState<box[]>([]);
     const [categories, setCategories] = useState<category[]>([]);
     const [locations, setLocations] = useState<location[]>([]);
+
+
+    const onEdit = (id: number) => {
+        router.push(`/boxes/edit?id=${id}`); // NOT WORKING YET!
+    };
+
+    const onDelete = (id: number) => {
+        Alert.alert(
+            "Confirm Delete",
+            "Are you sure you want to delete this box?",
+            [
+                { text: "Cancel", style: "cancel" },
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: () => handleDelete(id),
+                }
+            ]
+        );
+    };
+
+    const handleDelete = async (id: number) => {
+        try {
+            await db.deleteBox(id);
+
+            // Aggiorna lo stato rimuovendo l'elemento
+            setBoxes((prevBoxes: any) => prevBoxes.filter((box: any) => box.id !== id));
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     const presetCategories = [
         { name: "Electronics" },
@@ -91,6 +143,7 @@ export default function Index() {
     ];
 
     useEffect(() => {
+        console.log('Here!');
         // Create tables initially
         db.createTables().then(() => {
             // Load boxes from the database
@@ -171,19 +224,39 @@ export default function Index() {
         });
     };
 
+    // Swipeable elements
+
     return (
+        <GestureHandlerRootView style={{ flex: 1 }}>
         <View style={{ flex: 1, padding: 16, }}>
             <FlatList
                 data={boxes}
                 keyExtractor={(item, index) => `${item.id}`}
                 renderItem={({ item }) => (
-                    <List.Item
-                        onPress={() => router.push(`/boxes/details?id=${item.id}`)}
-                        title={item.name}
-                        description={item.description}
-                        left={() => <Image source={require("@/assets/images/box.png")} style={{ width: 24, height: 24 }} />}
-                        right={() => <Image source={require("@/assets/images/arrow_forward_ios.png")} style={{ width: 24, height: 24 }} />}
-                    />
+                    <Swipeable
+                        renderLeftActions={() => (
+                            <TouchableOpacity style={[styles.actionButton, styles.editButton]} onPress={() => onEdit(item.id)}>
+                                <Text style={styles.actionText}>Edit</Text>
+                            </TouchableOpacity>
+                        )}
+                        renderRightActions={() => (
+                            <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => onDelete(item.id)}>
+                                <Text style={styles.actionText}>Delete</Text>
+                            </TouchableOpacity>
+                        )}
+                        overshootLeft={false}
+                        overshootRight={false}
+                    >
+                    <View style={styles.listItemContainer}>
+                        <List.Item
+                            onPress={() => router.push(`/boxes/details?id=${item.id}`)}
+                            title={item.name}
+                            description={item.description}
+                            left={() => <Image source={require("@/assets/images/box.png")} style={{ width: 24, height: 24 }} />}
+                            right={() => <Image source={require("@/assets/images/arrow_forward_ios.png")} style={{ width: 24, height: 24 }} />}
+                        />
+                    </View>
+                    </Swipeable>
                 )}
             />
             <View style={styles.container_r}>
@@ -195,5 +268,6 @@ export default function Index() {
                 </TouchableOpacity>
             </View>
         </View>
+        </GestureHandlerRootView>
     );
 }
