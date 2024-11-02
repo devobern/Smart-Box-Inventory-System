@@ -1,7 +1,7 @@
 import { Link } from "@react-navigation/native";
 import { Text, View } from "react-native";
 
-export default function Index() {
+export default function Screen() {
   return (
     <View
       style={{
@@ -10,9 +10,9 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>List of indexes</Text>
-      <Link to="/items/add">
-        Add a new item
+      <Text>Add a new item</Text>
+      <Link to="/items">
+        Back to list
       </Link>
     </View>
   );
