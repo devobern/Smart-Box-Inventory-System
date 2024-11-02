@@ -363,8 +363,7 @@ export const addItem = async (
   try {
     const date = new Date().toISOString();
     // @ts-ignore
-    const result = await statement.executeAsync({
-      $name: name,
+    const result = await statement.executeAsync({$name: name,
       $quantity: quantity,
       $created: date,
       $updated: date,
@@ -401,8 +400,7 @@ export const updateItem = async (
   try {
     const date = new Date().toISOString();
     // @ts-ignore
-    const result = await statement.executeAsync({
-      $name: name,
+    const result = await statement.executeAsync({$name: name,
       $id: id,
       $quantity: quantity,
       $updated: date,
