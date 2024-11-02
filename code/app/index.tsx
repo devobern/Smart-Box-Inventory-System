@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useCallback} from "react";
 //import FloatingActionButton from "@/components/fab";
 import FloatingActionButton from "@/components/AddButton";
 import { router } from "expo-router";
@@ -14,6 +14,7 @@ import * as db from "../services/database";
 import { box } from "./types/box";
 import { category } from "@/app/types/category";
 import { location } from "@/app/types/location";
+import {Link, useFocusEffect} from "@react-navigation/native";
 import {Ionicons} from "@expo/vector-icons";
 import { List } from "react-native-paper";
 import {GestureHandlerRootView, Swipeable} from "react-native-gesture-handler";
@@ -178,6 +179,23 @@ export default function Index() {
         });
     }, []);
 
+    const fetchBoxes = async () => {
+        try {
+            const data = await db.getBoxes();
+            if (data) {
+                setBoxes(data as box[]);
+            }
+        } catch (error) {
+            console.error("Error fetching locations:", error);
+        }
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchBoxes();
+        }, [])
+    );
+
     const addPresetCategories = () => {
         const promises = presetCategories.map((category) =>
             db.addCategory(category.name)
@@ -210,7 +228,7 @@ export default function Index() {
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, padding: 16, }}>
             <FlatList
                 data={boxes}
                 keyExtractor={(item, index) => `${item.id}`}

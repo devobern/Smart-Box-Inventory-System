@@ -1,18 +1,18 @@
 import FloatingActionButton from "@/components/fab";
-import { useLocalSearchParams } from 'expo-router';
-import { FlatList, Text, View, StyleSheet, Pressable, Modal } from "react-native";
+import { router, useLocalSearchParams, useNavigation } from 'expo-router';
+import { FlatList, Text, View, StyleSheet, Pressable, Modal, Image } from "react-native";
 import * as db from "@/services/database";
 import { Item } from "@/app/types/item";
 import QRCode from "react-native-qrcode-svg";
 import { useState } from "react";
 import * as Print from "expo-print";
 import { MaterialIcons } from "@expo/vector-icons"; // Import icon library
+import { box } from "../types/box";
+import { List } from "react-native-paper";
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         padding: 16,
     },
     title: {
@@ -90,7 +90,7 @@ export default function BoxDetails() {
     let qrCodeRef: any = null; // Reference for QR Code
 
     let items = [] as Item[];
-    db.getItems(Number(id)).then((db_items) => {
+    db.getBoxItems(Number(id)).then((db_items) => {
         if (db_items !== null) {
             db_items.forEach((u_item) => {
                 let item = u_item as Item;
@@ -116,14 +116,13 @@ export default function BoxDetails() {
                 data={items}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <View style={styles.listItem}>
-                        <Text style={styles.itemName}>Name: {item.name}</Text>
-                        <Text>Category: {item.category}</Text>
-                        <Text>Box ID: {item.boxId}</Text>
-                        {item.description && <Text>Description: {item.description}</Text>}
-                        {item.quantity && <Text>Quantity: {item.quantity}</Text>}
-                        {item.photoUrl && <Text>Photo URL: {item.photoUrl}</Text>}
-                    </View>
+                    <List.Item
+                        onPress={() => router.push(`/items/details?itemId=${item.id}`)}
+                        title={item.name}
+                        description={item.description}
+                        left={() => <Image source={require("@/assets/images/item.png")} style={{ width: 24, height: 24 }} />}
+                        right={() => <Image source={require("@/assets/images/arrow_forward_ios.png")} style={{ width: 24, height: 24 }} />}
+                    />
                 )}
             />
             <Pressable style={styles.qrButton} onPress={() => setModalVisible(true)}>

@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, TextInput, Button } from "react-native";
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import * as db from "@/services/database"; // Import database functions
-import { useLocalSearchParams } from 'expo-router';
+import {router, useLocalSearchParams} from 'expo-router';
 
 type RootStackParamList = {
     index: undefined;
@@ -111,7 +111,7 @@ export default function Screen() {
                     setItemDescription('');
                     setItemQuantity('1'); // Reset to default quantity
                     setItemPhotoUrl('');
-                    navigation.navigate('index');
+                    router.push(`/boxes/details?id=${boxId}`)
                 } else {
                     console.error('Failed to add item');
                 }
