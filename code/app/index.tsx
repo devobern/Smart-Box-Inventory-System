@@ -3,6 +3,7 @@ import { View, FlatList } from "react-native";
 import BoxListItem from "@/components/BoxListItem";
 import * as db from "@/services/database";
 import { box } from "./types/box";
+import {category} from "@/app/types/category";
 
 db.createTables().then(r => "created tables :)");
 
@@ -17,6 +18,26 @@ export default function Index() {
             });
         }
     });
+
+    const presetCategories = [
+        { name: 'Electronics' },
+        { name: 'Home Appliances' },
+        { name: 'Books' },
+        { name: 'Clothing' },
+        { name: 'Sports Equipment' },
+        { name: 'Beauty & Personal Care' },
+        { name: 'Toys & Games' },
+        { name: 'Furniture' },
+        { name: 'Groceries' },
+        { name: 'Automotive Parts' },
+    ];
+
+    const addPresetCategories = async () => {
+        for (let category of presetCategories) {
+            const id = db.addCategory(category.name);
+        };
+    }
+    addPresetCategories();
 
   return (
     <View
