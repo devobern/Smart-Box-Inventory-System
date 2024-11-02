@@ -53,7 +53,7 @@ export default function FloatingActionButton() {
             )}
             {isExpanded && (
                 <Animated.View style={[styles.secondaryButton, { transform: [{ translateY: btn3Position }] }]}>
-                    <TouchableOpacity style={styles.button} onPress={() => router.push(`/category/add`)}>
+                    <TouchableOpacity style={styles.button} onPress={() => router.push(`/categories/add`)}>
                         <Ionicons name="list-outline" size={24} color="white" />
                     </TouchableOpacity>
                 </Animated.View>

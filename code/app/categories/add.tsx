@@ -5,8 +5,8 @@ import {NavigationProp, useNavigation} from "@react-navigation/native";
 
 
 type RootStackParamList = {
-    "category/index": undefined; // Matching the registered route in RootLayout
-    "category/add": undefined;
+    "categories/index": undefined; // Matching the registered route in RootLayout
+    "categories/add": undefined;
 };
 
 const AddCategoryScreen = () => {
@@ -20,7 +20,7 @@ const AddCategoryScreen = () => {
 
                 if (result) {
                     setName('');
-                    navigation.navigate("category/index");
+                    navigation.navigate("categories/index");
                 } else {
                     console.error('Failed to add category');
                 }
