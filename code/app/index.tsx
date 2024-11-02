@@ -26,7 +26,6 @@ export default function Index() {
         <FlatList
             data={boxes}
             renderItem={(b) => <BoxListItem box={b.item} />}
-            // renderItem={(b) => <Text>{b.item.name}</Text>}
         />
     </View>
         <FloatingActionButton route="/boxes/add"/>
