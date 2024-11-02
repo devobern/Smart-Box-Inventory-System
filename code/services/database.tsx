@@ -1,3 +1,6 @@
+import { box } from "@/app/types/box";
+import { Item } from "@/app/types/item";
+import { SearchResult } from "@/app/types/SearchResult";
 import * as SQLite from "expo-sqlite";
 
 let db: SQLite.SQLiteDatabase;
@@ -454,14 +457,16 @@ export const getItem = async (id: number): Promise<object | null> => {
  * @returns An array of item objects or null if the table is empty.
  */
 export const getItems = async (boxId: number): Promise<unknown[] | null> => {
-    const db = await openDatabase();
-    const statement = await db.prepareAsync(`SELECT * FROM item WHERE boxId = $boxId`);
-    try {
-        const result = await statement.executeAsync({ $boxId: boxId });
-        return await result.getAllAsync() ?? null;
-    } finally {
-        await statement.finalizeAsync();
-    }
+  const db = await openDatabase();
+  const statement = await db.prepareAsync(
+    `SELECT * FROM item WHERE boxId = $boxId`
+  );
+  try {
+    const result = await statement.executeAsync({ $boxId: boxId });
+    return (await result.getAllAsync()) ?? null;
+  } finally {
+    await statement.finalizeAsync();
+  }
 };
 
 /**
@@ -596,7 +601,7 @@ export const getBoxItemsCount = async (boxId: number): Promise<unknown> => {
  * @param query - The search query string.
  * @returns An array of items that match the search criteria, or null if no matches are found.
  */
-export const searchItems = async (query: string): Promise<unknown[] | null> => {
+export const searchItems = async (query: string): Promise<Item[] | null> => {
   // Validate query input
   if (!query) {
     console.error("Query is empty or undefined.");
@@ -614,11 +619,40 @@ export const searchItems = async (query: string): Promise<unknown[] | null> => {
 
     // Execute the query with the parameter
     const result = await statement.executeAsync({ $query: `%${query}%` });
-    const items = await result.getAllAsync();
+    const items = (await result.getAllAsync()) as Item[];
 
     // Finalize the statement and return the items
     await statement.finalizeAsync();
     return items.length ? items : null;
+  } catch (error) {
+    console.error("Error executing search query:", error);
+    return null;
+  }
+};
+
+/**
+ * Searches for boxes by name that match the given query.
+ * @param query - The search query string.
+ * @returns An array of boxes that match the search criteria, or null if no matches are found.
+ */
+export const searchBoxes = async (query: string): Promise<box[] | null> => {
+  if (!query) {
+    console.error("Query is empty or undefined.");
+    return null;
+  }
+
+  try {
+    const db = await openDatabase();
+    const statement = await db.prepareAsync(`
+        SELECT * FROM box
+        WHERE name LIKE $query
+    `);
+
+    const result = await statement.executeAsync({ $query: `%${query}%` });
+    const boxes = (await result.getAllAsync()) as box[];
+
+    await statement.finalizeAsync();
+    return boxes.length ? boxes : null;
   } catch (error) {
     console.error("Error executing search query:", error);
     return null;
