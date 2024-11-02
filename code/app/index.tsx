@@ -41,8 +41,6 @@ const styles = StyleSheet.create({
     },
 });
 
-db.createTables();
-
 export default function Index() {
     const [boxes, setBoxes] = useState<box[]>([]);
     const [categories, setCategories] = useState<category[]>([]);
