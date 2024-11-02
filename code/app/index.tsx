@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
     },
     listItemContainer: {
         backgroundColor: "white",
+        padding: 10
     },
 });
 
@@ -228,7 +229,7 @@ export default function Index() {
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-        <View style={{ flex: 1, padding: 16, }}>
+        <View style={{ flex: 1}}>
             <FlatList
                 data={boxes}
                 keyExtractor={(item, index) => `${item.id}`}
