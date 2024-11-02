@@ -28,7 +28,7 @@ interface FABProps {
     icon?: ImageSourcePropType;
 }
 
-export default function FloatingActionButton({ route, icon=require("@/assets/images/plus.svg") }: FABProps) {
+export default function FloatingActionButton({ route, icon=require("@/assets/images/plus.png") }: FABProps) {
 
     const navigation = useNavigation();
 
