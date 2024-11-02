@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -13,8 +13,23 @@ import { router, useRouter } from "expo-router";
 const SearchHeader: React.FC = () => {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
-  //const navigation = useNavigation();
+  const [isFocused, setIsFocused] = useState(false);
   const router = useRouter();
+
+  // Debounce the search function to prevent it from being called too frequently
+  const debounceDelay = 300;
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (query) {
+        handleSearch(query);
+      } else {
+        setSearchResults([]);
+      }
+    }, debounceDelay);
+
+    return () => clearTimeout(handler); // Clear timeout on cleanup
+  }, [query]);
 
   const handleSearch = async (input: string) => {
     setQuery(input);
@@ -53,6 +68,8 @@ const SearchHeader: React.FC = () => {
         placeholder="Search items..."
         value={query}
         onChangeText={handleSearch}
+        onFocus={() => setIsFocused(true)} // Set focus state to true
+        onBlur={() => setIsFocused(false)} // Set focus state to false
         style={{
           height: 40,
           borderColor: "#ccc",
@@ -62,6 +79,9 @@ const SearchHeader: React.FC = () => {
           marginBottom: 5,
         }}
       />
+      {isFocused && searchResults.length === 0 && query !== "" && (
+        <Text style={{ padding: 10, color: "#999" }}>No items found</Text>
+      )}
       {searchResults.length > 0 && (
         <FlatList
           data={searchResults}
