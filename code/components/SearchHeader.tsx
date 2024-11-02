@@ -6,13 +6,15 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-//import { useNavigation } from "@react-navigation/native";
-import { searchItems } from "../services/database";
+import { searchItems, searchBoxes } from "../services/database";
 import { router, useRouter } from "expo-router";
+import { SearchResult } from "@/app/types/SearchResult";
+import { Item } from "@/app/types/item";
+import { box } from "@/app/types/box";
 
 const SearchHeader: React.FC = () => {
   const [query, setQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isFocused, setIsFocused] = useState(false);
   const router = useRouter();
 
@@ -32,26 +34,38 @@ const SearchHeader: React.FC = () => {
   }, [query]);
 
   const handleSearch = async (input: string) => {
-    setQuery(input);
-    if (input) {
-      try {
-        const items = await searchItems(input); // Await the result of searchItems
-        setSearchResults(items || []); // Update searchResults with items or an empty array if null
-      } catch (error) {
-        console.error("Error searching items:", error);
-        setSearchResults([]); // Clear results on error
-      }
-    } else {
+    try {
+      const [items, boxes] = await Promise.all([
+        searchItems(input) as Promise<Item[] | null>, // Cast the result as Item[] | null
+        searchBoxes(input) as Promise<box[] | null>, // Cast the result as box[] | null
+      ]);
+      const itemsWithType = (items || []).map((item) => ({
+        ...item,
+        type: "item" as const,
+      }));
+      const boxesWithType = (boxes || []).map((box) => ({
+        ...box,
+        type: "box" as const,
+      }));
+      setSearchResults([...itemsWithType, ...boxesWithType]);
+    } catch (error) {
+      console.error("Error searching items and boxes:", error);
       setSearchResults([]);
     }
   };
 
-  const handleSelectItem = (item: any) => {
-    // Navigate to the itemDetail screen and pass only the itemId
-    router.push({
-      pathname: "/itemDetail",
-      params: { itemId: item.id },
-    });
+  const handleSelectItem = (item: SearchResult) => {
+    if (item.type === "item") {
+      router.push({
+        pathname: "/items/details",
+        params: { itemId: item.id },
+      });
+    } else {
+      router.push({
+        pathname: "/boxes/details",
+        params: { id: item.id },
+      });
+    }
     setSearchResults([]);
     setQuery("");
   };
@@ -67,7 +81,7 @@ const SearchHeader: React.FC = () => {
       <TextInput
         placeholder="Search items..."
         value={query}
-        onChangeText={handleSearch}
+        onChangeText={setQuery}
         onFocus={() => setIsFocused(true)} // Set focus state to true
         onBlur={() => setIsFocused(false)} // Set focus state to false
         style={{
@@ -85,7 +99,7 @@ const SearchHeader: React.FC = () => {
       {searchResults.length > 0 && (
         <FlatList
           data={searchResults}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => `${item.type}-${item.id.toString()}`} // Combine type and id to create a unique key
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => handleSelectItem(item)}
@@ -95,7 +109,9 @@ const SearchHeader: React.FC = () => {
                 borderBottomColor: "#ddd",
               }}
             >
-              <Text>{item.name}</Text>
+              <Text>
+                {item.name} ({item.type === "item" ? "Item" : "Box"})
+              </Text>
             </TouchableOpacity>
           )}
           style={{
