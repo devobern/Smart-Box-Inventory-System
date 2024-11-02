@@ -1,6 +1,8 @@
 import FloatingActionButton from "@/components/fab";
-import { Link } from "@react-navigation/native";
+import { useLocalSearchParams } from 'expo-router';
 import { FlatList, Text, View, StyleSheet } from "react-native";
+import * as db from "@/services/database";
+import { Item } from "@/app/types/item";
 
 const styles = StyleSheet.create({
     container: {
@@ -42,10 +44,22 @@ const items = [{
 }];
 
 export default function BoxDetails() {
+
+    const { id } = useLocalSearchParams<{ id: string }>();
   
+    let items = [] as Item[];
+    db.getItems(Number(id)).then((db_items) => {
+        if (db_items !== null) {
+            db_items.forEach((u_item) => {
+                let item = u_item as Item;
+                items.push(item);
+            });
+        }
+    });
+
   return (
         <View style={styles.container}>
-            <Text style={styles.title}>Your Items:</Text>
+            <Text style={styles.title}>Your Items in box {id}:</Text>
             <FlatList
                 data={items}
                 keyExtractor={(item) => item.boxId}
