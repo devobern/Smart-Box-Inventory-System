@@ -37,7 +37,7 @@ export default function FloatingActionButton({ route, icon=require("@/assets/ima
     return (
         <View style={ styles.container }>
             <TouchableOpacity style={ styles.button } onPress={ handlePress }>
-                <Image source={icon} style={{ width: PixelRatio.roundToNearestPixel(24), height: PixelRatio.roundToNearestPixel(24) }} />
+                <Image source={icon} style={{ width: PixelRatio.roundToNearestPixel(24), height: PixelRatio.roundToNearestPixel(24), tintColor: onPrimaryColor }} />
             </TouchableOpacity>
         </View>
     )
