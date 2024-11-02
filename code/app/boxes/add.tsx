@@ -1,19 +1,36 @@
-import {Button, StyleSheet, TextInput, Text, View, Pressable} from "react-native";
-import {useState} from "react";
+import {StyleSheet, TextInput, Text, View, Pressable} from "react-native";
+import {useState, useEffect} from "react";
 import {router} from "expo-router";
 import * as DB from "@/services/database";
+import { Picker } from '@react-native-picker/picker';
 
-
+// Define types for Location
+type Location = {
+    id: number;
+    name: string;
+};
 
 export default function AddBox() {
-    //Replace with type object Box.ts
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [creationDate, setcDate] = useState(new Date())
-    const [updateDate, setuDate] = useState(new Date())
+    const [location, setLocation] = useState('');
+    const [locations, setLocations] = useState<Location[]>([]);
 
-    // TO DO: Add function for save on db
-    // db.addBox().then(router.push('/boxes'));
+    useEffect(() => {
+        // Fetch locations from the database when the component mounts
+        const fetchLocations = async () => {
+            try {
+                const result = await DB.getLocations();
+                if (Array.isArray(result)) {
+                    setLocations(result as Location[]);
+                }
+            } catch (error) {
+                console.error('Error fetching locations:', error);
+            }
+        };
+
+        fetchLocations();
+    }, []);
 
     return (
         <View>
@@ -32,10 +49,30 @@ export default function AddBox() {
                 style={styles.inputText}
             />
             <Text style={styles.text}>Location</Text>
-            <Pressable style={styles.saveButton} onPress={()=>{
-                alert('Start Saving')
-                DB.addBox(name, 0, undefined).then((id) => alert('Saved with id ' + id))
-                router.push('/')
+            <Picker
+                selectedValue={location}
+                style={styles.inputText}
+                onValueChange={(itemValue) => setLocation(itemValue)}
+            >
+                <Picker.Item label="Select location" value="" />
+                {locations.map((loc) => (
+                    <Picker.Item key={loc.id} label={loc.name} value={loc.id.toString()} />
+                ))}
+            </Picker>
+            <Pressable style={styles.saveButton} onPress={async () => {
+                if (name && location) {
+                    alert('Start Saving');
+                    try {
+                        const id = await DB.addBox(name, parseInt(location, 10), undefined);
+                        alert('Saved with id ' + id);
+                        router.push('/');
+                    } catch (error) {
+                        console.error('Error saving box:', error);
+                        alert('Failed to save box');
+                    }
+                } else {
+                    alert('Please fill in all fields');
+                }
             }}>
                 <Text style={styles.saveText}>Save</Text>
             </Pressable>
