@@ -1,4 +1,3 @@
-import { Link } from "@react-navigation/native";
 import { Text, View } from "react-native";
 
 export default function Index() {
@@ -10,10 +9,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-      <Link to="/boxes">
-        List of Boxes
-      </Link>
+      <Text>List of boxes</Text>
     </View>
   );
 }
