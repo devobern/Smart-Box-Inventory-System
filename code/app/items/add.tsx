@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Text, View, StyleSheet, TextInput, Button } from "react-native";
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { Item } from '@/app/types/item';
-// import { Picker } from '@react-native-picker/picker';
+import {Picker} from '@react-native-picker/picker';
+import { router } from "expo-router";
 
 type RootStackParamList = {
     index: undefined;
@@ -36,7 +37,7 @@ export default function Screen() {
     const [itemDescription, setItemDescription] = useState('');
     const [itemQuantity, setItemQuantity] = useState('1'); // Set default quantity to "1"
     const [itemPhotoUrl, setItemPhotoUrl] = useState('');
-    const addItem  = (itemWithoutId: Omit<Item, 'id'>) => {};
+    const addItem  = (itemWithoutId: Omit<Item, 'id'>) => {router.push(`/boxes/details?id=${itemWithoutId.boxId}`)} ;
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const handleAddItem = () => {
@@ -74,10 +75,10 @@ export default function Screen() {
                 onChangeText={setItemName}
                 placeholder="Enter item name"
             />
-            {/* <Picker
+            <Picker
                 selectedValue={itemCategory}
                 style={styles.input}
-                onValueChange={(i) => setItemCategory(i)}
+                onValueChange={(itemValue) => setItemCategory(itemValue)}
             >
                 <Picker.Item label="Select category" value="" />
                 <Picker.Item label="Clothing" value="Clothing" />
@@ -92,7 +93,7 @@ export default function Screen() {
                 <Picker.Item label="Select box ID" value="" />
                 <Picker.Item label="Box 1" value="Box 1" />
                 <Picker.Item label="Box 2" value="Box 2" />
-            </Picker> */}
+            </Picker> 
             <TextInput
                 style={styles.input}
                 value={itemDescription}
