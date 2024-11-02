@@ -12,17 +12,16 @@ import { List } from "react-native-paper";
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
     },
     title: {
         fontSize: 18,
-        marginBottom: 8,
+        padding: 10,
+        marginTop: 10,
+        marginBottom: 10,
     },
     listItem: {
-        padding: 16,
-        borderBottomColor: '#ccc',
-        borderBottomWidth: 1,
-        width: '100%',
+        backgroundColor: "white",
+        padding: 20,
     },
     itemName: {
         fontWeight: 'bold',
@@ -122,7 +121,7 @@ export default function BoxDetails() {
                 data={items}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <List.Item
+                    <List.Item style={styles.listItem}
                         onPress={() => router.push(`/items/details?itemId=${item.id}`)}
                         title={item.name}
                         description={item.description}
