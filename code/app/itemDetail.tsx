@@ -1,8 +1,41 @@
-import React from "react";
-import { View, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, ActivityIndicator } from "react-native";
+import { useLocalSearchParams } from "expo-router"; // Use useLocalSearchParams instead
+import { getItem } from "../services/database"; // Import the function to fetch an item from the database
 
-const ItemDetail: React.FC<{ route: any }> = ({ route }) => {
-  const { item } = route.params;
+const ItemDetail: React.FC = () => {
+  const { itemId } = useLocalSearchParams(); // Retrieve the itemId parameter
+  const [item, setItem] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchItem = async () => {
+      if (itemId) {
+        try {
+          const fetchedItem = await getItem(parseInt(itemId as string, 10));
+          setItem(fetchedItem);
+        } catch (error) {
+          console.error("Failed to fetch item:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchItem();
+  }, [itemId]);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (!item) {
+    return (
+      <View style={{ padding: 16 }}>
+        <Text>No item details found.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={{ padding: 16 }}>
