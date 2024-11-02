@@ -90,7 +90,7 @@ export default function BoxDetails() {
     let qrCodeRef: any = null; // Reference for QR Code
 
     let items = [] as Item[];
-    db.getItems(Number(id)).then((db_items) => {
+    db.getBoxItems(Number(id)).then((db_items) => {
         if (db_items !== null) {
             db_items.forEach((u_item) => {
                 let item = u_item as Item;
