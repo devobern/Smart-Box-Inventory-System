@@ -4,6 +4,7 @@ import {
     StyleSheet,
     View,
     FlatList,
+    Image,
 } from "react-native";
 import BoxListItem from "@/components/BoxListItem";
 import * as db from "../services/database";
@@ -11,6 +12,8 @@ import { box } from "./types/box";
 import { category } from "@/app/types/category";
 import { location } from "@/app/types/location";
 import {Link} from "@react-navigation/native";
+import { ListItem } from "@react-native-material/core";
+import { router } from "expo-router";
 
 const styles = StyleSheet.create({
     item: {
@@ -129,13 +132,19 @@ export default function Index() {
 
     return (
         <View style={{ flex: 1 }}>
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingTop: 20 }}>
-                <FlatList
-                    data={boxes}
-                    keyExtractor={(item, index) => `${item.id}`}
-                    renderItem={({ item }) => <BoxListItem box={item} />}
-                />
-            </View>
+            <FlatList
+                data={boxes}
+                keyExtractor={(item, index) => `${item.id}`}
+                renderItem={({ item }) => (
+                    <ListItem
+                        onPress={() => router.push(`/boxes/details?id=${item.id}`)}
+                        title={item.name}
+                        secondaryText={item.description}
+                        leading={<Image source={require("@/assets/images/box.png")} style={{ width: 24, height: 24 }} />}
+                        trailing={<Image source={require("@/assets/images/arrow_forward_ios.png")} style={{ width: 24, height: 24 }} />}
+                    />
+                )}
+            />
             <FloatingActionButton route="/boxes/add" />
             <Link to="/scanner">
                 Go To Scanner
