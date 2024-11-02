@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import FloatingActionButton from "@/components/fab";
-import { Link } from "@react-navigation/native";
 import { router } from "expo-router";
 import {
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  View,
-  FlatList,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    View,
+    FlatList,
 } from "react-native";
 import SearchHeader from "../components/SearchHeader";
 import BoxListItem from "@/components/BoxListItem";
@@ -17,28 +16,28 @@ import { category } from "@/app/types/category";
 import { location } from "@/app/types/location";
 
 const styles = StyleSheet.create({
-  item: {
-    justifyContent: "space-between",
-    borderColor: "#000000",
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 15,
-    marginVertical: 4,
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 32,
-  },
-  nbItems: {
-    textAlign: "right",
-    fontSize: 14,
-    color: "gray",
-  },
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
+    item: {
+        justifyContent: "space-between",
+        borderColor: "#000000",
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 15,
+        marginVertical: 4,
+        marginHorizontal: 16,
+    },
+    title: {
+        fontSize: 32,
+    },
+    nbItems: {
+        textAlign: "right",
+        fontSize: 14,
+        color: "gray",
+    },
+    titleContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        flex: 1,
+    },
 });
 
 export default function Index() {
@@ -74,46 +73,14 @@ export default function Index() {
         // Load boxes from the database
         db.getBoxes().then((b) => {
             if (b !== null) {
-                setBoxes(b as box[]); // Type-casting to box[]
+                setBoxes(b as box[]);
             }
         });
-   let boxes = [] as box[];
-    db.getBoxes().then((b) => {
-        if (b !== null) {
-            b.forEach((uBox) => {
-                let box = uBox as box;
-                boxes.push(box);
-            });
-        }
-    });
 
-    const presetCategories = [
-        { name: 'Electronics' },
-        { name: 'Home Appliances' },
-        { name: 'Books' },
-        { name: 'Clothing' },
-        { name: 'Sports Equipment' },
-        { name: 'Beauty & Personal Care' },
-        { name: 'Toys & Games' },
-        { name: 'Furniture' },
-        { name: 'Groceries' },
-        { name: 'Automotive Parts' },
-    ];
-
-  const renderItem = ({ item }: any) => (
-        <View style={styles.item}>
-            <TouchableOpacity onPress={() => router.push(`/boxes/details?id=${item.id}`)}>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.title}>{item.title}</Text>
-                </View>
-                <Text style={styles.nbItems}>({item.nb_items})</Text>
-            </TouchableOpacity>
-        </View>
-    );
         // Load categories from the database
         db.getCategories().then((b) => {
             if (b !== null) {
-                const fetchedCategories = b as category[]; // Type-casting to category[]
+                const fetchedCategories = b as category[];
                 if (fetchedCategories.length === 0) {
                     addPresetCategories();
                 } else {
@@ -125,7 +92,7 @@ export default function Index() {
         // Load locations from the database
         db.getLocations().then((b) => {
             if (b !== null) {
-                const fetchedLocations = b as location[]; // Type-casting to location[]
+                const fetchedLocations = b as location[];
                 if (fetchedLocations.length === 0) {
                     addPresetLocations();
                 } else {
@@ -143,12 +110,11 @@ export default function Index() {
         Promise.all(promises).then(() => {
             db.getCategories().then((newCategories) => {
                 if (newCategories !== null) {
-                    setCategories(newCategories as category[]); // Type-casting to category[]
+                    setCategories(newCategories as category[]);
                 }
             });
         });
     };
-
 
     const addPresetLocations = () => {
         const promises = presetLocations.map((location) =>
@@ -158,34 +124,34 @@ export default function Index() {
         Promise.all(promises).then(() => {
             db.getLocations().then((newLocations) => {
                 if (newLocations !== null) {
-                    setLocations(newLocations as location[]); // Type-casting to location[]
+                    setLocations(newLocations as location[]);
                 }
             });
         });
     };
 
-  return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
-      {/* Replace top bar with SearchHeader */}
-      <SearchHeader />
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          paddingTop: 20,
-        }}
-      >
-        <FlatList
-            data={boxes}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <BoxListItem box={item} />}
-        />
-      </View>
-      <FloatingActionButton route="/boxes/add" />
-    </View>
-  );}
+    const renderItem = ({ item }: any) => (
+        <View style={styles.item}>
+            <TouchableOpacity onPress={() => router.push(`/boxes/details?id=${item.id}`)}>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.title}>{item.title}</Text>
+                </View>
+                <Text style={styles.nbItems}>({item.nb_items})</Text>
+            </TouchableOpacity>
+        </View>
+    );
+
+    return (
+        <View style={{ flex: 1 }}>
+            <SearchHeader />
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingTop: 20 }}>
+                <FlatList
+                    data={boxes}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => <BoxListItem box={item} />}
+                />
+            </View>
+            <FloatingActionButton route="/boxes/add" />
+        </View>
+    );
+}
