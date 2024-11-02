@@ -363,8 +363,7 @@ export const addItem = async (
   try {
     const date = new Date().toISOString();
     // @ts-ignore
-    const result = await statement.executeAsync({
-      $name: name,
+    const result = await statement.executeAsync({$name: name,
       $quantity: quantity,
       $created: date,
       $updated: date,
@@ -401,8 +400,7 @@ export const updateItem = async (
   try {
     const date = new Date().toISOString();
     // @ts-ignore
-    const result = await statement.executeAsync({
-      $name: name,
+    const result = await statement.executeAsync({$name: name,
       $id: id,
       $quantity: quantity,
       $updated: date,
@@ -450,10 +448,10 @@ export const getItem = async (id: number): Promise<object | null> => {
 };
 
 /**
- * Retrieves all rows in the `item` table.
+ * Retrieves all rows in the `item` table of specified box.
  * @returns An array of item objects or null if the table is empty.
  */
-export const getItems = async (boxId: number): Promise<unknown[] | null> => {
+export const getBoxItems = async (boxId: number): Promise<unknown[] | null> => {
     const db = await openDatabase();
     const statement = await db.prepareAsync(`SELECT * FROM item WHERE boxId = $boxId`);
     try {
@@ -462,6 +460,21 @@ export const getItems = async (boxId: number): Promise<unknown[] | null> => {
     } finally {
         await statement.finalizeAsync();
     }
+};
+
+/**
+ * Retrieves all rows in the `item` table.
+ * @returns An array of item objects or null if the table is empty.
+ */
+export const getItems = async (): Promise<unknown[] | null> => {
+  const db = await openDatabase();
+  const statement = await db.prepareAsync(`SELECT * FROM item`);
+  try {
+    const result = await statement.executeAsync();
+    return await result.getAllAsync() ?? null;
+  } finally {
+    await statement.finalizeAsync();
+  }
 };
 
 /**

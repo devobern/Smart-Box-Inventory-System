@@ -2,7 +2,6 @@ import { router, Stack } from "expo-router";
 import { Image, TouchableOpacity } from "react-native";
 import { PaperProvider, MD3LightTheme } from 'react-native-paper';
 
-
 export default function RootLayout() {
   const theme = {
     ...MD3LightTheme,
@@ -34,6 +33,10 @@ export default function RootLayout() {
         <Stack.Screen name="items/index" options={{ title: "Items" }} />
         <Stack.Screen name="items/add" options={{ title: "Add new item" }} />
         <Stack.Screen name="itemDetail" options={{ title: "Item detail" }} />
+        <Stack.Screen name="location/index" options={{title: "Locations Overview"}}/>
+        <Stack.Screen name="location/add" options={{title: "Add New Location"}}/>
+        <Stack.Screen name="categories/index" options={{title: "Categories Overview"}}/>
+        <Stack.Screen name="categories/add" options={{title: "Add New Category"}}/>
       </Stack>
     </PaperProvider>
   );
