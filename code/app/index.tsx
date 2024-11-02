@@ -5,10 +5,12 @@ import BoxListItem from "@/components/BoxListItem";
 import * as db from "@/services/database";
 import { box } from "./types/box";
 import { category } from "@/app/types/category";
+import { location } from "@/app/types/location";
 
 export default function Index() {
     const [boxes, setBoxes] = useState<box[]>([]);
     const [categories, setCategories] = useState<category[]>([]);
+    const [locations, setLocations] = useState<location[]>([]);
 
     const presetCategories = [
         { name: "Electronics" },
@@ -23,6 +25,14 @@ export default function Index() {
         { name: "Automotive Parts" },
     ];
 
+    const presetLocations = [
+        { name: "Living room" },
+        { name: "Bath" },
+        { name: "Kitchen" },
+        { name: "Bedroom" },
+        { name: "Basement" },
+    ];
+
     useEffect(() => {
         // Create tables initially
         db.createTables().then(() => console.log("Created tables :)"));
@@ -30,18 +40,30 @@ export default function Index() {
         // Load boxes from the database
         db.getBoxes().then((b) => {
             if (b !== null) {
-                setBoxes(b as box[]);  // Type-casting to box[]
+                setBoxes(b as box[]); // Type-casting to box[]
             }
         });
 
         // Load categories from the database
         db.getCategories().then((b) => {
             if (b !== null) {
-                const fetchedCategories = b as category[];  // Type-casting to category[]
+                const fetchedCategories = b as category[]; // Type-casting to category[]
                 if (fetchedCategories.length === 0) {
                     addPresetCategories();
                 } else {
                     setCategories(fetchedCategories);
+                }
+            }
+        });
+
+        // Load locations from the database
+        db.getLocations().then((b) => {
+            if (b !== null) {
+                const fetchedLocations = b as location[]; // Type-casting to location[]
+                if (fetchedLocations.length === 0) {
+                    addPresetLocations();
+                } else {
+                    setLocations(fetchedLocations);
                 }
             }
         });
@@ -56,6 +78,20 @@ export default function Index() {
             db.getCategories().then((newCategories) => {
                 if (newCategories !== null) {
                     setCategories(newCategories as category[]); // Type-casting to category[]
+                }
+            });
+        });
+    };
+
+    const addPresetLocations = () => {
+        const promises = presetLocations.map((location) =>
+            db.addLocation(location.name)
+        );
+
+        Promise.all(promises).then(() => {
+            db.getLocations().then((newLocations) => {
+                if (newLocations !== null) {
+                    setLocations(newLocations as location[]); // Type-casting to location[]
                 }
             });
         });
