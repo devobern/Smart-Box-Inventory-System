@@ -3,13 +3,12 @@ import React, { useState, useEffect } from "react";
 import FloatingActionButton from "@/components/AddButton";
 import { router } from "expo-router";
 import {
-    Text,
-    TouchableOpacity,
     StyleSheet,
     View,
     FlatList,
+    Image,
+    TouchableOpacity,
 } from "react-native";
-import SearchHeader from "../components/SearchHeader";
 import BoxListItem from "@/components/BoxListItem";
 import * as db from "../services/database";
 import { box } from "./types/box";
@@ -17,6 +16,7 @@ import { category } from "@/app/types/category";
 import { location } from "@/app/types/location";
 import {Link} from "@react-navigation/native";
 import {Ionicons} from "@expo/vector-icons";
+import { List } from "react-native-paper";
 
 const styles = StyleSheet.create({
     item: {
@@ -154,27 +154,21 @@ export default function Index() {
         });
     };
 
-    const renderItem = ({ item }: any) => (
-        <View style={styles.item}>
-            <TouchableOpacity onPress={() => router.push(`/boxes/details?id=${item.id}`)}>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.title}>{item.title}</Text>
-                </View>
-                <Text style={styles.nbItems}>({item.nb_items})</Text>
-            </TouchableOpacity>
-        </View>
-    );
-
     return (
         <View style={{ flex: 1 }}>
-            <SearchHeader />
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingTop: 20 }}>
-                <FlatList
-                    data={boxes}
-                    keyExtractor={(item, index) => `${item.id}`}
-                    renderItem={({ item }) => <BoxListItem box={item} />}
-                />
-            </View>
+            <FlatList
+                data={boxes}
+                keyExtractor={(item, index) => `${item.id}`}
+                renderItem={({ item }) => (
+                    <List.Item
+                        onPress={() => router.push(`/boxes/details?id=${item.id}`)}
+                        title={item.name}
+                        description={item.description}
+                        left={() => <Image source={require("@/assets/images/box.png")} style={{ width: 24, height: 24 }} />}
+                        right={() => <Image source={require("@/assets/images/arrow_forward_ios.png")} style={{ width: 24, height: 24 }} />}
+                    />
+                )}
+            />
             <View style={styles.container_r}>
                 <FloatingActionButton/>
             </View>
