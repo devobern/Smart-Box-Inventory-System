@@ -1,75 +1,80 @@
+import React, { useState, useEffect } from "react";
 import FloatingActionButton from "@/components/fab";
 import { View, FlatList } from "react-native";
 import BoxListItem from "@/components/BoxListItem";
 import * as db from "@/services/database";
 import { box } from "./types/box";
-import {category} from "@/app/types/category";
-
-db.createTables().then(r => "created tables :)");
+import { category } from "@/app/types/category";
 
 export default function Index() {
-
-    let boxes = [] as box[];
-    db.getBoxes().then((b) => {
-        if (b !== null) {
-            b.forEach((uBox) => {
-                let box = uBox as box;
-                boxes.push(box);
-            });
-        }
-    });
+    const [boxes, setBoxes] = useState<box[]>([]);
+    const [categories, setCategories] = useState<category[]>([]);
 
     const presetCategories = [
-        { name: 'Electronics' },
-        { name: 'Home Appliances' },
-        { name: 'Books' },
-        { name: 'Clothing' },
-        { name: 'Sports Equipment' },
-        { name: 'Beauty & Personal Care' },
-        { name: 'Toys & Games' },
-        { name: 'Furniture' },
-        { name: 'Groceries' },
-        { name: 'Automotive Parts' },
+        { name: "Electronics" },
+        { name: "Home Appliances" },
+        { name: "Books" },
+        { name: "Clothing" },
+        { name: "Sports Equipment" },
+        { name: "Beauty & Personal Care" },
+        { name: "Toys & Games" },
+        { name: "Furniture" },
+        { name: "Groceries" },
+        { name: "Automotive Parts" },
     ];
 
-    let categories=[] as category[];
-    db.getCategories().then((b) => {
-        if (b !== null) {
-            alert(b.length);
-            b.forEach((uCategory) => {
-                let category = uCategory as category;
-                categories.push(category);
-            });
-            alert("categories:"+categories.length);
-            if (categories.length == 0){
-                alert("Debug");
-                addPresetCategories();
-            }
-        }
-    });
+    useEffect(() => {
+        // Create tables initially
+        db.createTables().then(() => console.log("Created tables :)"));
 
+        // Load boxes from the database
+        db.getBoxes().then((b) => {
+            if (b !== null) {
+                setBoxes(b as box[]);  // Type-casting to box[]
+            }
+        });
+
+        // Load categories from the database
+        db.getCategories().then((b) => {
+            if (b !== null) {
+                const fetchedCategories = b as category[];  // Type-casting to category[]
+                if (fetchedCategories.length === 0) {
+                    addPresetCategories();
+                } else {
+                    setCategories(fetchedCategories);
+                }
+            }
+        });
+    }, []);
 
     const addPresetCategories = () => {
-        for (let category of presetCategories) {
-            const id = db.addCategory(category.name);
-        };
-    }
+        const promises = presetCategories.map((category) =>
+            db.addCategory(category.name)
+        );
 
+        Promise.all(promises).then(() => {
+            db.getCategories().then((newCategories) => {
+                if (newCategories !== null) {
+                    setCategories(newCategories as category[]); // Type-casting to category[]
+                }
+            });
+        });
+    };
 
-
-  return (
-    <View
-      style={{
-        flex: 1
-      }}
-    >
-    <View>
-        <FlatList
-            data={boxes}
-            renderItem={(b) => <BoxListItem box={b.item} />}
-        />
-    </View>
-        <FloatingActionButton route="/boxes/add"/>
-    </View>
-  );
+    return (
+        <View
+            style={{
+                flex: 1,
+            }}
+        >
+            <View>
+                <FlatList
+                    data={boxes}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => <BoxListItem box={item} />}
+                />
+            </View>
+            <FloatingActionButton route="/boxes/add" />
+        </View>
+    );
 }
