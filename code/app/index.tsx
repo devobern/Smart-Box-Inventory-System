@@ -92,37 +92,37 @@ export default function Index() {
 
     useEffect(() => {
         // Create tables initially
-        db.createTables().then(() => console.log("Created tables :)"));
-
-        // Load boxes from the database
-        db.getBoxes().then((b) => {
-            if (b !== null) {
-                setBoxes(b as box[]);
-            }
-        });
-
-        // Load categories from the database
-        db.getCategories().then((b) => {
-            if (b !== null) {
-                const fetchedCategories = b as category[];
-                if (fetchedCategories.length === 0) {
-                    addPresetCategories();
-                } else {
-                    setCategories(fetchedCategories);
+        db.createTables().then(() => {
+            // Load boxes from the database
+            db.getBoxes().then((b) => {
+                if (b !== null) {
+                    setBoxes(b as box[]);
                 }
-            }
-        });
+            });
 
-        // Load locations from the database
-        db.getLocations().then((b) => {
-            if (b !== null) {
-                const fetchedLocations = b as location[];
-                if (fetchedLocations.length === 0) {
-                    addPresetLocations();
-                } else {
-                    setLocations(fetchedLocations);
+            // Load categories from the database
+            db.getCategories().then((b) => {
+                if (b !== null) {
+                    const fetchedCategories = b as category[];
+                    if (fetchedCategories.length === 0) {
+                        addPresetCategories();
+                    } else {
+                        setCategories(fetchedCategories);
+                    }
                 }
-            }
+            });
+
+            // Load locations from the database
+            db.getLocations().then((b) => {
+                if (b !== null) {
+                    const fetchedLocations = b as location[];
+                    if (fetchedLocations.length === 0) {
+                        addPresetLocations();
+                    } else {
+                        setLocations(fetchedLocations);
+                    }
+                }
+            });
         });
     }, []);
 
