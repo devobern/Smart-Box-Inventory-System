@@ -52,7 +52,7 @@ export default function BoxDetails() {
             <Text style={styles.title}>Your Items in box {id}:</Text>
             <FlatList
                 data={items}
-                keyExtractor={(item) => item.boxId}
+                keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.listItem}>
                         <Text style={styles.itemName}>Name: {item.name}</Text>
