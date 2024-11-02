@@ -34,7 +34,7 @@ export default function AddBox() {
             <Text style={styles.text}>Location</Text>
             <Pressable style={styles.saveButton} onPress={()=>{
                 alert('Start Saving')
-                DB.addBox(name, 0, undefined).then(() => alert('Saved'))
+                DB.addBox(name, 0, undefined).then((id) => alert('Saved with id ' + id))
                 router.push('/')
             }}>
                 <Text style={styles.saveText}>Save</Text>

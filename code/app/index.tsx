@@ -1,18 +1,20 @@
 import FloatingActionButton from "@/components/fab";
-import { Link } from "@react-navigation/native";
-import { router } from "expo-router";
-import { useState } from "react";
-import { Text, TouchableOpacity, StyleSheet, View, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
 import BoxListItem from "@/components/BoxListItem";
 import * as db from "@/services/database";
 import { box } from "./types/box";
 
-db.openDatabase();
-db.createTables();
+export default function Index() {
 
-export default async function Index() {
-
-    let boxes = await db.getBoxes() as box[]
+    let boxes = [] as box[];
+    db.getBoxes().then((b) => {
+        if (b !== null) {
+            b.forEach((uBox) => {
+                let box = uBox as box;
+                boxes.push(box);
+            });
+        }
+    });
 
   return (
     <View
@@ -23,8 +25,8 @@ export default async function Index() {
     <View>
         <FlatList
             data={boxes}
-            // renderItem={(b) => <BoxListItem box={b.item} />}
-            renderItem={(b) => <Text>{b.item.name}</Text>}
+            renderItem={(b) => <BoxListItem box={b.item} />}
+            // renderItem={(b) => <Text>{b.item.name}</Text>}
         />
     </View>
         <FloatingActionButton route="/boxes/add"/>
