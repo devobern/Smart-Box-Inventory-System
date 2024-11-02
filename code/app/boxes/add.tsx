@@ -33,7 +33,7 @@ export default function AddBox() {
             <Text style={styles.text}>Location</Text>
             <Pressable style={styles.saveButton} onPress={()=>{
                 // TO DO: Save new box in the DB
-                router.push('/boxes')
+                router.push('/')
             }}>
                 <Text style={styles.saveText}>Save</Text>
             </Pressable>
