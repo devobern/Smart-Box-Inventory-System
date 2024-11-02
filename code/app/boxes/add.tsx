@@ -38,9 +38,7 @@ export default function AddBox() {
             alert('Please provide a name and select a location.');
             return;
         }
-        alert('Start Saving');
         DB.addBox(name, parseInt(locationId)).then((id) => {
-            alert('Saved with id ' + id);
             setBoxId(String(id)); // Set the ID for the QR code and show the modal
             setModalVisible(true);
         });
