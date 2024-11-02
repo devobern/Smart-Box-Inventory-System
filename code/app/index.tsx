@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import FloatingActionButton from "@/components/fab";
 import { Link } from "@react-navigation/native";
 import { router } from "expo-router";
-import { useState } from "react";
 import {
   Text,
   TouchableOpacity,
@@ -16,10 +15,6 @@ import * as db from "../services/database";
 import { box } from "./types/box";
 import { category } from "@/app/types/category";
 import { location } from "@/app/types/location";
-import {category} from "@/app/types/category";
-
-// Create tables if they don't exist
-db.createTables();
 
 const styles = StyleSheet.create({
   item: {
@@ -154,6 +149,21 @@ export default function Index() {
         });
     };
 
+
+    const addPresetLocations = () => {
+        const promises = presetLocations.map((location) =>
+            db.addLocation(location.name)
+        );
+
+        Promise.all(promises).then(() => {
+            db.getLocations().then((newLocations) => {
+                if (newLocations !== null) {
+                    setLocations(newLocations as location[]); // Type-casting to location[]
+                }
+            });
+        });
+    };
+
   return (
     <View
       style={{
@@ -178,35 +188,4 @@ export default function Index() {
       </View>
       <FloatingActionButton route="/boxes/add" />
     </View>
-  );
-    const addPresetLocations = () => {
-        const promises = presetLocations.map((location) =>
-            db.addLocation(location.name)
-        );
-
-        Promise.all(promises).then(() => {
-            db.getLocations().then((newLocations) => {
-                if (newLocations !== null) {
-                    setLocations(newLocations as location[]); // Type-casting to location[]
-                }
-            });
-        });
-    };
-
-    return (
-        <View
-            style={{
-                flex: 1,
-            }}
-        >
-            <View>
-                <FlatList
-                    data={boxes}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ item }) => <BoxListItem box={item} />}
-                />
-            </View>
-            <FloatingActionButton route="/boxes/add" />
-        </View>
-    );
-}
+  );}
