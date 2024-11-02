@@ -11,7 +11,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         marginHorizontal: 16,
         marginVertical: 4,
-        width: '80%',
+        width: '100%',
+        right: 16,
     },
     containerFocused: {
         backgroundColor: '#F7F2FA',  // MD3 lighter surface variant when focused
