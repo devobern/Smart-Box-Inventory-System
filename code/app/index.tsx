@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
 import FloatingActionButton from "@/components/fab";
-import { router } from "expo-router";
 import {
-    Text,
-    TouchableOpacity,
     StyleSheet,
     View,
     FlatList,
 } from "react-native";
-import SearchHeader from "../components/SearchHeader";
 import BoxListItem from "@/components/BoxListItem";
 import * as db from "../services/database";
 import { box } from "./types/box";
@@ -131,20 +127,8 @@ export default function Index() {
         });
     };
 
-    const renderItem = ({ item }: any) => (
-        <View style={styles.item}>
-            <TouchableOpacity onPress={() => router.push(`/boxes/details?id=${item.id}`)}>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.title}>{item.title}</Text>
-                </View>
-                <Text style={styles.nbItems}>({item.nb_items})</Text>
-            </TouchableOpacity>
-        </View>
-    );
-
     return (
         <View style={{ flex: 1 }}>
-            <SearchHeader />
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingTop: 20 }}>
                 <FlatList
                     data={boxes}
