@@ -1,6 +1,7 @@
 import {Button, StyleSheet, TextInput, Text, View, Pressable} from "react-native";
 import {useState} from "react";
 import {router} from "expo-router";
+import * as DB from "@/services/database";
 
 
 
@@ -32,7 +33,8 @@ export default function AddBox() {
             />
             <Text style={styles.text}>Location</Text>
             <Pressable style={styles.saveButton} onPress={()=>{
-                // TO DO: Save new box in the DB
+                alert('Start Saving')
+                DB.addBox(name, 0, undefined).then(() => alert('Saved'))
                 router.push('/')
             }}>
                 <Text style={styles.saveText}>Save</Text>

@@ -37,7 +37,7 @@ export default function Screen() {
     const [itemDescription, setItemDescription] = useState('');
     const [itemQuantity, setItemQuantity] = useState('1'); // Set default quantity to "1"
     const [itemPhotoUrl, setItemPhotoUrl] = useState('');
-    const addItem  = (itemWithoutId: Omit<Item, 'id'>) => {router.push(`/boxes/details?id=${itemWithoutId.boxId}`)} ;
+    const addItem  = (itemWithoutId: Omit<Item, 'id'>) => {} ;
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const handleAddItem = () => {
