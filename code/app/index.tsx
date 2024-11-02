@@ -14,6 +14,7 @@ import * as db from "../services/database";
 import { box } from "./types/box";
 import { category } from "@/app/types/category";
 import { location } from "@/app/types/location";
+import {Link} from "@react-navigation/native";
 
 const styles = StyleSheet.create({
     item: {
@@ -147,11 +148,14 @@ export default function Index() {
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingTop: 20 }}>
                 <FlatList
                     data={boxes}
-                    keyExtractor={(item) => item.id.toString()}
+                    keyExtractor={(item, index) => `${item.id}`}
                     renderItem={({ item }) => <BoxListItem box={item} />}
                 />
             </View>
             <FloatingActionButton route="/boxes/add" />
+            <Link to="/scanner">
+                Go To Scanner
+            </Link>
         </View>
     );
 }
