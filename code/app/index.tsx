@@ -40,6 +40,8 @@ const styles = StyleSheet.create({
     },
 });
 
+db.createTables();
+
 export default function Index() {
     const [boxes, setBoxes] = useState<box[]>([]);
     const [categories, setCategories] = useState<category[]>([]);
@@ -147,7 +149,7 @@ export default function Index() {
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingTop: 20 }}>
                 <FlatList
                     data={boxes}
-                    keyExtractor={(item) => item.id.toString()}
+                    keyExtractor={(item, index) => `${item.id}`}
                     renderItem={({ item }) => <BoxListItem box={item} />}
                 />
             </View>
