@@ -39,7 +39,7 @@ const CategoriesOverview = () => {
                 renderItem={renderCategoryItem}
             />
             <FloatingActionButton
-                route="/category/add"
+                route="/categories/add"
             />
         </View>
     );
