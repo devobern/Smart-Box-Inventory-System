@@ -1,5 +1,6 @@
 import { Link } from "@react-navigation/native";
 import { Text, View } from "react-native";
+import FloatingActionButton from "@/components/fab";
 
 export default function Index() {
   return (
@@ -11,9 +12,7 @@ export default function Index() {
       }}
     >
       <Text>List of boxes</Text>
-      <Link to="/boxes/add">
-        Add a new box
-      </Link>
+      <FloatingActionButton route="/boxes/add" />
       <Link to="/items">
         Box details
       </Link>

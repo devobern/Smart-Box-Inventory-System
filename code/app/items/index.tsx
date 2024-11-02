@@ -1,3 +1,4 @@
+import FloatingActionButton from "@/components/fab";
 import { Link } from "@react-navigation/native";
 import { Text, View } from "react-native";
 
@@ -11,9 +12,7 @@ export default function Index() {
       }}
     >
       <Text>List of indexes</Text>
-      <Link to="/items/add">
-        Add a new item
-      </Link>
+      <FloatingActionButton route="/items/add" />
     </View>
   );
 }
