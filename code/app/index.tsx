@@ -12,7 +12,7 @@ import { box } from "./types/box";
 import { category } from "@/app/types/category";
 import { location } from "@/app/types/location";
 import {Link} from "@react-navigation/native";
-import { List } from 'react-native-paper';
+import { FAB, List } from 'react-native-paper';
 import { router } from "expo-router";
 
 const styles = StyleSheet.create({
@@ -145,7 +145,11 @@ export default function Index() {
                     />
                 )}
             />
-            <FloatingActionButton route="/boxes/add" />
+            <FAB 
+                icon={require("@/assets/images/plus.png")}
+                style={{ position: "absolute", margin: 16, bottom: 0, right: 0 }}
+                onPress={() => router.push("/boxes/add")}
+            />
             <Link to="/scanner">
                 Go To Scanner
             </Link>
