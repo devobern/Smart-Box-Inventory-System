@@ -16,6 +16,7 @@ import { box } from "./types/box";
 import { category } from "@/app/types/category";
 import { location } from "@/app/types/location";
 import {Link} from "@react-navigation/native";
+import {Ionicons} from "@expo/vector-icons";
 
 const styles = StyleSheet.create({
     item: {
@@ -40,6 +41,27 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flex: 1,
     },
+    btn : {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: "#2196F3",
+        alignItems: "center",
+        justifyContent: "center",
+        elevation: 5,
+    },
+    container_r: {
+        position: "absolute",
+        bottom: 30,
+        right: 30,
+        alignItems: "center",
+    },
+    container_l: {
+        position: "absolute",
+        bottom: 30,
+        left: 30,
+        alignItems: "center",
+    }
 });
 
 export default function Index() {
@@ -153,10 +175,14 @@ export default function Index() {
                     renderItem={({ item }) => <BoxListItem box={item} />}
                 />
             </View>
-            <FloatingActionButton/>
-            <Link to="/scanner">
-                Go To Scanner
-            </Link>
+            <View style={styles.container_r}>
+                <FloatingActionButton/>
+            </View>
+            <View style={styles.container_l}>
+                <TouchableOpacity style={styles.btn} onPress={() => router.push(`/scanner`)}>
+                    <Ionicons name="scan-outline" size={30} color="white" />
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
