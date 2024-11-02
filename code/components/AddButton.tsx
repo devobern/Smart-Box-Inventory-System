@@ -36,7 +36,7 @@ export default function FloatingActionButton() {
     });
 
     return (
-        <View style={styles.container}>
+        <View>
             {isExpanded && (
                 <Animated.View style={[styles.secondaryButton, { transform: [{ translateY: btn1Position }] }]}>
                     <TouchableOpacity style={styles.button} onPress={() => router.push(`/boxes/add`)}>
