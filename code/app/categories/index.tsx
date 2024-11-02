@@ -32,14 +32,14 @@ const CategoriesOverview = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Locations Overview</Text>
+            <Text style={styles.header}>Category Overview</Text>
             <FlatList
                 data={categories}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderCategoryItem}
             />
             <FloatingActionButton
-                route="/category/add"
+                route="/categories/add"
             />
         </View>
     );
