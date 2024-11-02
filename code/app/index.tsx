@@ -4,6 +4,8 @@ import BoxListItem from "@/components/BoxListItem";
 import * as db from "@/services/database";
 import { box } from "./types/box";
 
+db.createTables().then(r => "created tables :)");
+
 export default function Index() {
 
     let boxes = [] as box[];
