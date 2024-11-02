@@ -1,9 +1,9 @@
-import { Link } from "@react-navigation/native";
 import { useState, useEffect } from "react";
 import { Text, View, StyleSheet, TextInput, Button } from "react-native";
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import * as db from "@/services/database"; // Import database functions
+import { useLocalSearchParams } from 'expo-router';
 
 type RootStackParamList = {
     index: undefined;
@@ -41,9 +41,11 @@ const styles = StyleSheet.create({
 });
 
 export default function Screen() {
+    const { boxId } = useLocalSearchParams<{ boxId: string }>(); // Get boxId from the route parameters
+
     const [itemName, setItemName] = useState('');
     const [itemCategory, setItemCategory] = useState<string>('');
-    const [itemBoxId, setItemBoxId] = useState<string>('');
+    const [itemBoxId, setItemBoxId] = useState<string>(boxId ? boxId : ''); // Set initial box ID if it exists
     const [itemDescription, setItemDescription] = useState('');
     const [itemQuantity, setItemQuantity] = useState('1'); // Default quantity
     const [itemPhotoUrl, setItemPhotoUrl] = useState('');
@@ -52,7 +54,7 @@ export default function Screen() {
 
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-    // Fetch categories from the database when the component mounts
+    // Fetch categories and boxes from the database when the component mounts
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -92,7 +94,6 @@ export default function Screen() {
             };
 
             try {
-                // Use nullish coalescing operator (??) to ensure that the parameters are of type `number`
                 const result = await db.addItem(
                     newItem.name,
                     newItem.quantity ?? 1, // Default to 1 if quantity is undefined
@@ -106,7 +107,7 @@ export default function Screen() {
                     // Item added successfully, clear the form
                     setItemName('');
                     setItemCategory('');
-                    setItemBoxId('');
+                    setItemBoxId(boxId ? boxId : ''); // Reset box ID to initial value if it was passed
                     setItemDescription('');
                     setItemQuantity('1'); // Reset to default quantity
                     setItemPhotoUrl('');
@@ -139,16 +140,20 @@ export default function Screen() {
                     <Picker.Item key={category.id} label={category.name} value={category.id.toString()} />
                 ))}
             </Picker>
-            <Picker
-                selectedValue={itemBoxId}
-                style={styles.input}
-                onValueChange={(itemValue) => setItemBoxId(itemValue)}
-            >
-                <Picker.Item label="Select box" value="" />
-                {boxes.map((box) => (
-                    <Picker.Item key={box.id} label={box.name} value={box.id.toString()} />
-                ))}
-            </Picker>
+            {boxId ? (
+                <Text style={styles.label}>Box ID: {boxId}</Text>
+            ) : (
+                <Picker
+                    selectedValue={itemBoxId}
+                    style={styles.input}
+                    onValueChange={(itemValue) => setItemBoxId(itemValue)}
+                >
+                    <Picker.Item label="Select box" value="" />
+                    {boxes.map((box) => (
+                        <Picker.Item key={box.id} label={box.name} value={box.id.toString()} />
+                    ))}
+                </Picker>
+            )}
             <TextInput
                 style={styles.input}
                 value={itemDescription}

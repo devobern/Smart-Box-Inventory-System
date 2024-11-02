@@ -33,16 +33,6 @@ const styles = StyleSheet.create({
     },
 });
 
-const items = [{
-    id: '1',
-    name: 'Item 1',
-    category: 'Category 1',
-    boxId: '1',
-    description: 'Description 1',
-    quantity: 10,
-    photoUrl: 'https://example.com/item1.jpg',
-}];
-
 export default function BoxDetails() {
 
     const { id } = useLocalSearchParams<{ id: string }>();
@@ -74,7 +64,7 @@ export default function BoxDetails() {
                     </View>
                 )}
             />
-            <FloatingActionButton route="/items/add"/>
+            <FloatingActionButton route={`/items/add?boxId=${id}`} />
         </View>
     );
 }
