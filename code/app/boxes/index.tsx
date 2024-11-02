@@ -1,5 +1,6 @@
 import { Link } from "@react-navigation/native";
 import { Text, View } from "react-native";
+import FloatingActionButton from "@/components/fab";
 
 export default function Index() {
   return (
@@ -10,9 +11,10 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-      <Link to="/boxes">
-        List of Boxes
+      <Text>List of boxes</Text>
+      <FloatingActionButton route="/boxes/add" />
+      <Link to="/items">
+        Box details
       </Link>
     </View>
   );
