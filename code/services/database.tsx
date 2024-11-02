@@ -624,3 +624,76 @@ export const searchItems = async (query: string): Promise<unknown[] | null> => {
     return null;
   }
 };
+
+/**
+ * The following functions are used to delete all rows in
+ * the corresponding tables.
+ **/
+
+/**
+ * Deletes all rows in the `location` table.
+ * @returns A Promise that resolves when all locations have been deleted.
+ */
+export const deleteAllLocations = async (): Promise<void> => {
+  const db = await openDatabase();
+  const statement = await db.prepareAsync("DELETE FROM location;");
+  try {
+    await statement.executeAsync();
+    console.log("All locations deleted.");
+  } catch (error) {
+    console.error("Error deleting all locations:", error);
+  } finally {
+    await statement.finalizeAsync();
+  }
+};
+
+/**
+ * Deletes all rows in the `box` table.
+ * @returns A Promise that resolves when all boxes have been deleted.
+ */
+export const deleteAllBoxes = async (): Promise<void> => {
+  const db = await openDatabase();
+  const statement = await db.prepareAsync("DELETE FROM box;");
+  try {
+    await statement.executeAsync();
+    console.log("All boxes deleted.");
+  } catch (error) {
+    console.error("Error deleting all boxes:", error);
+  } finally {
+    await statement.finalizeAsync();
+  }
+};
+
+/**
+ * Deletes all rows in the `category` table.
+ * @returns A Promise that resolves when all categories have been deleted.
+ */
+export const deleteAllCategories = async (): Promise<void> => {
+  const db = await openDatabase();
+  const statement = await db.prepareAsync("DELETE FROM category;");
+  try {
+    await statement.executeAsync();
+    console.log("All categories deleted.");
+  } catch (error) {
+    console.error("Error deleting all categories:", error);
+  } finally {
+    await statement.finalizeAsync();
+  }
+};
+
+/**
+ * Deletes all rows in the `item` table.
+ * @returns A Promise that resolves when all items have been deleted.
+ */
+export const deleteAllItems = async (): Promise<void> => {
+  const db = await openDatabase();
+  const statement = await db.prepareAsync("DELETE FROM item;");
+  try {
+    await statement.executeAsync();
+    console.log("All items deleted.");
+  } catch (error) {
+    console.error("Error deleting all items:", error);
+  } finally {
+    await statement.finalizeAsync();
+  }
+};
