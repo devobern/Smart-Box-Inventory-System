@@ -441,12 +441,12 @@ export const deleteItem = async (id: number): Promise<number | null> => {
  * @param id - The ID of the item to retrieve.
  * @returns The item row as an object or null if not found.
  */
-export const getItem = async (id: number): Promise<object | null> => {
+export const getItem = async (id: number): Promise<Item | null> => {
   const db = await openDatabase();
   const statement = await db.prepareAsync(`SELECT * FROM item WHERE id = $id`);
   try {
     const result = await statement.executeAsync({ $id: id });
-    return (await result.getFirstAsync()) ?? null;
+    return (await result.getFirstAsync()) as Item || null;
   } finally {
     await statement.finalizeAsync();
   }

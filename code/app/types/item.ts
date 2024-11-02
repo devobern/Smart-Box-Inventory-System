@@ -1,7 +1,7 @@
 export type Item = {
   id: number; // Unique id
   name: string; // Name for each item
-  category: string; // Category of the item, e.g., "Clothing", "Electronics"
+  categoryId: number; // Category of the item, e.g., "Clothing", "Electronics"
   boxId: string; // Identifier for the box storing this item
   description?: string; // Optional detailed description about the item
   quantity?: number; // Number of identical items -> FOR FUTURE IMPLEMENTATION
