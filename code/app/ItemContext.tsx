@@ -3,7 +3,7 @@ import { Item } from '@/app/types/item';
 
 type ItemContextType = {
     items: Item[];
-    addItem: (item: Item) => void;
+    addItem: (item: Omit<Item, 'id'>) => void; // Accept an item without 'id'
 };
 
 const ItemContext = createContext<ItemContextType | undefined>(undefined);
@@ -11,8 +11,13 @@ const ItemContext = createContext<ItemContextType | undefined>(undefined);
 export function ItemProvider({ children }: { children: React.ReactNode }) {
     const [items, setItems] = useState<Item[]>([]);
 
-    const addItem = (item: Item) => {
-        setItems((prevItems) => [...prevItems, item]);
+    const addItem = (itemWithoutId: Omit<Item, 'id'>) => {
+        const itemWithId = {
+            ...itemWithoutId,
+            id: BigInt(Math.floor(Math.random() * 1000000)), // Temporary ID for testing
+            // ID will be assigned automatically when DB is ready
+        };
+        setItems((prevItems) => [...prevItems, itemWithId]);
     };
 
     return (
