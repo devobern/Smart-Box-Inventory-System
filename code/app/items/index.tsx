@@ -10,13 +10,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>List of boxes</Text>
-      <Link to="/boxes/add">
-        Add a new box
-      </Link>
-      <Link to="/items">
-        Box details
-      </Link>
+      <Text>List of indexes</Text>
     </View>
   );
 }
