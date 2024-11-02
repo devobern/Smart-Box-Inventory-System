@@ -1,6 +1,10 @@
 import { Link } from "@react-navigation/native";
 import { Text, View } from "react-native";
 import SearchHeader from "../components/SearchHeader";
+import * as db from "../services/database";
+
+// Create tables if they don't exist
+db.createTables();
 
 export default function Index() {
   return (
