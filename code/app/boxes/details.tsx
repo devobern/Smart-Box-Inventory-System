@@ -117,7 +117,7 @@ export default function BoxDetails() {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <List.Item
-                        onPress={() => router.push(`/itemDetail?id=${item.id}`)}
+                        onPress={() => router.push(`/items/details?itemId=${item.id}`)}
                         title={item.name}
                         description={item.description}
                         left={() => <Image source={require("@/assets/images/item.png")} style={{ width: 24, height: 24 }} />}
