@@ -14,6 +14,7 @@ import BoxListItem from "@/components/BoxListItem";
 import * as db from "../services/database";
 import { box } from "./types/box";
 import {category} from "@/app/types/category";
+import { Banner, Button } from "@react-native-material/core";
 
 // Create tables if they don't exist
 db.createTables();
@@ -36,8 +37,6 @@ export default function Index() {
         flex: 1,
       }}
     >
-      {/* Replace top bar with SearchHeader */}
-      <SearchHeader />
       <View
         style={{
           flex: 1,
