@@ -1,4 +1,3 @@
-// components/SearchHeader.tsx
 import React, { useState } from "react";
 import {
   View,
@@ -7,50 +6,37 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../types"; // Import types
-import { searchItems } from "../scripts/database";
+//import { useNavigation } from "@react-navigation/native";
+import { searchItems } from "../services/database";
+import { router, useRouter } from "expo-router";
 
-/* Define the navigation prop type */
-type SearchHeaderNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "index"
->;
-
-/*
-  query: The search input from the user
-  searchResults: The list of search results
-  navigation: This useNavigation hook, typed with SearchHeaderNavigationProp, gives us access to the navigation object for programmatically navigating between screens.
-*/
 const SearchHeader: React.FC = () => {
-  /*
-  query: The search input from the user
-  searchResults: The list of search results
-  navigation: This useNavigation hook, typed with SearchHeaderNavigationProp, gives us access to the navigation object for programmatically navigating between screens.
-  */
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
-  const navigation = useNavigation<SearchHeaderNavigationProp>();
+  //const navigation = useNavigation();
+  const router = useRouter();
 
-  /*
-    handleSearch: This function is called when the user types in the search input. It updates the query state and calls the searchItems function to get the search results.
-  */
-  const handleSearch = (input: string) => {
+  const handleSearch = async (input: string) => {
     setQuery(input);
     if (input) {
-      searchItems(input, (items) => setSearchResults(items));
+      try {
+        const items = await searchItems(input); // Await the result of searchItems
+        setSearchResults(items || []); // Update searchResults with items or an empty array if null
+      } catch (error) {
+        console.error("Error searching items:", error);
+        setSearchResults([]); // Clear results on error
+      }
     } else {
       setSearchResults([]);
     }
   };
 
-  /*
-    handleSelectItem: This function is called when the user selects an item from the search results. It navigates to the itemDetail screen with the selected item as a parameter.
-  */
   const handleSelectItem = (item: any) => {
-    // Navigating to the itemDetail screen with the item as a parameter
-    navigation.navigate("itemDetail", { item });
+    // Navigate to the itemDetail screen and pass only the itemId
+    router.push({
+      pathname: "/itemDetail",
+      params: { itemId: item.id },
+    });
     setSearchResults([]);
     setQuery("");
   };
