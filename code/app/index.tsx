@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import FloatingActionButton from "@/components/fab";
+//import FloatingActionButton from "@/components/fab";
+import FloatingActionButton from "@/components/AddButton";
 import { router } from "expo-router";
 import {
     Text,
@@ -152,7 +153,7 @@ export default function Index() {
                     renderItem={({ item }) => <BoxListItem box={item} />}
                 />
             </View>
-            <FloatingActionButton route="/boxes/add" />
+            <FloatingActionButton/>
             <Link to="/scanner">
                 Go To Scanner
             </Link>
