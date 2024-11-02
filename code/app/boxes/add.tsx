@@ -1,43 +1,19 @@
 import { Button, StyleSheet, TextInput, Text, View, Pressable, Modal } from "react-native";
-import {useState, useEffect} from "react";
-import {router} from "expo-router";
+import { useState } from "react";
 import QRCode from "react-native-qrcode-svg";
 import * as DB from "@/services/database";
-import { Picker } from '@react-native-picker/picker';
-
-// Define types for Location
-type Location = {
-    id: number;
-    name: string;
-};
+import { router } from "expo-router";
 import * as Print from "expo-print";
 
 export default function AddBox() {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [location, setLocation] = useState('');
-    const [locations, setLocations] = useState<Location[]>([]);
     const [creationDate, setcDate] = useState(new Date());
     const [updateDate, setuDate] = useState(new Date());
     const [modalVisible, setModalVisible] = useState(false);
     const [boxId, setBoxId] = useState<string | null>(null);
     let qrCodeRef: any = null; // Declare qrCodeRef as a variable
 
-    useEffect(() => {
-        // Fetch locations from the database when the component mounts
-        const fetchLocations = async () => {
-            try {
-                const result = await DB.getLocations();
-                if (Array.isArray(result)) {
-                    setLocations(result as Location[]);
-                }
-            } catch (error) {
-                console.error('Error fetching locations:', error);
-            }
-        };
-
-        fetchLocations();
-    }, []);
     // Function to handle saving and showing the modal
     const handleSaveBox = () => {
         alert('Start Saving');
@@ -76,31 +52,6 @@ export default function AddBox() {
                 style={styles.inputText}
             />
             <Text style={styles.text}>Location</Text>
-            <Picker
-                selectedValue={location}
-                style={styles.inputText}
-                onValueChange={(itemValue) => setLocation(itemValue)}
-            >
-                <Picker.Item label="Select location" value="" />
-                {locations.map((loc) => (
-                    <Picker.Item key={loc.id} label={loc.name} value={loc.id.toString()} />
-                ))}
-            </Picker>
-            <Pressable style={styles.saveButton} onPress={async () => {
-                if (name && location) {
-                    alert('Start Saving');
-                    try {
-                        const id = await DB.addBox(name, parseInt(location, 10), undefined);
-                        alert('Saved with id ' + id);
-                        router.push('/');
-                    } catch (error) {
-                        console.error('Error saving box:', error);
-                        alert('Failed to save box');
-                    }
-                } else {
-                    alert('Please fill in all fields');
-                }
-            }}>
             <Pressable
                 style={styles.saveButton}
                 onPress={handleSaveBox} // Save the box and open the modal
