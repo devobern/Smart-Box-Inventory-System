@@ -10,6 +10,8 @@ export default function RootLayout() {
             <Stack.Screen name="itemDetail" options={{title: "Item detail"}}/>
             <Stack.Screen name="location/index" options={{title: "Locations Overview"}}/>
             <Stack.Screen name="location/add" options={{title: "Add New Location"}}/>
+            <Stack.Screen name="categories/index" options={{title: "Categories Overview"}}/>
+            <Stack.Screen name="categories/add" options={{title: "Add New Category"}}/>
         </Stack>
     );
 }

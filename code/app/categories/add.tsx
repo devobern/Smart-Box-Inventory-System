@@ -5,7 +5,7 @@ import {NavigationProp, useNavigation} from "@react-navigation/native";
 
 
 type RootStackParamList = {
-    "categories/index": undefined; // Matching the registered route in RootLayout
+    "categories/index": undefined;
     "categories/add": undefined;
 };
 
@@ -31,7 +31,7 @@ const AddCategoryScreen = () => {
     };
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={styles.header}>Add new Category</Text>
             <TextInput
                 placeholder="Enter category name"
