@@ -1,14 +1,24 @@
 import { Link } from "@react-navigation/native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Text, View, StyleSheet, TextInput, Button } from "react-native";
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { Item } from '@/app/types/item';
-import {Picker} from '@react-native-picker/picker';
-import { router } from "expo-router";
+import { Picker } from '@react-native-picker/picker';
+import * as db from "@/services/database"; // Import database functions
 
 type RootStackParamList = {
     index: undefined;
     AddItemScreen: undefined;
+};
+
+// Define types for Category and Box
+type Category = {
+    id: number;
+    name: string;
+};
+
+type Box = {
+    id: number;
+    name: string;
 };
 
 const styles = StyleSheet.create({
@@ -31,38 +41,82 @@ const styles = StyleSheet.create({
 });
 
 export default function Screen() {
-  const [itemName, setItemName] = useState('');
-    const [itemCategory, setItemCategory] = useState('');
-    const [itemBoxId, setItemBoxId] = useState('');
+    const [itemName, setItemName] = useState('');
+    const [itemCategory, setItemCategory] = useState<string>('');
+    const [itemBoxId, setItemBoxId] = useState<string>('');
     const [itemDescription, setItemDescription] = useState('');
-    const [itemQuantity, setItemQuantity] = useState('1'); // Set default quantity to "1"
+    const [itemQuantity, setItemQuantity] = useState('1'); // Default quantity
     const [itemPhotoUrl, setItemPhotoUrl] = useState('');
-    const addItem  = (itemWithoutId: Omit<Item, 'id'>) => {} ;
+    const [categories, setCategories] = useState<Category[]>([]); // State to store categories
+    const [boxes, setBoxes] = useState<Box[]>([]); // State to store boxes
+
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-    const handleAddItem = () => {
+    // Fetch categories from the database when the component mounts
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const result = await db.getCategories();
+                if (Array.isArray(result)) {
+                    setCategories(result as Category[]);
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        const fetchBoxes = async () => {
+            try {
+                const result = await db.getBoxes();
+                if (Array.isArray(result)) {
+                    setBoxes(result as Box[]);
+                }
+            } catch (error) {
+                console.error('Error fetching boxes:', error);
+            }
+        };
+
+        fetchCategories();
+        fetchBoxes();
+    }, []);
+
+    const handleAddItem = async () => {
         if (itemName && itemCategory && itemBoxId) {
             const newItem = {
                 name: itemName,
-                category: itemCategory,
-                boxId: itemBoxId,
+                categoryId: parseInt(itemCategory, 10), // Assuming itemCategory is a valid category ID
+                boxId: parseInt(itemBoxId, 10), // Assuming itemBoxId is a valid box ID
                 description: itemDescription || undefined,
-                quantity: itemQuantity ? parseInt(itemQuantity, 10) : undefined,
-                photoUrl: itemPhotoUrl || undefined,
-                dateAdded: new Date(),
-                tags: [],
-                lastUpdated: new Date(),
+                quantity: itemQuantity ? parseInt(itemQuantity, 10) : 1, // Provide default value of 1 if undefined
+                img: itemPhotoUrl || undefined,
             };
-            addItem(newItem);
 
-            // Clear form inputs after adding item, with quantity resetting to "1"
-            setItemName('');
-            setItemCategory('');
-            setItemBoxId('');
-            setItemDescription('');
-            setItemQuantity('1'); // Reset to default quantity
-            setItemPhotoUrl('');
-            navigation.navigate('index');
+            try {
+                // Use nullish coalescing operator (??) to ensure that the parameters are of type `number`
+                const result = await db.addItem(
+                    newItem.name,
+                    newItem.quantity ?? 1, // Default to 1 if quantity is undefined
+                    newItem.boxId,
+                    newItem.img,
+                    newItem.description,
+                    newItem.categoryId ?? 0 // Default to 0 if categoryId is undefined
+                );
+
+                if (result) {
+                    // Item added successfully, clear the form
+                    setItemName('');
+                    setItemCategory('');
+                    setItemBoxId('');
+                    setItemDescription('');
+                    setItemQuantity('1'); // Reset to default quantity
+                    setItemPhotoUrl('');
+                    navigation.navigate('index');
+                } else {
+                    console.error('Failed to add item');
+                }
+            } catch (error) {
+                console.error('Error adding item:', error);
+            }
         }
     };
 
@@ -81,19 +135,20 @@ export default function Screen() {
                 onValueChange={(itemValue) => setItemCategory(itemValue)}
             >
                 <Picker.Item label="Select category" value="" />
-                <Picker.Item label="Clothing" value="Clothing" />
-                <Picker.Item label="Electronics" value="Electronics" />
-                <Picker.Item label="Furniture" value="Furniture" />
+                {categories.map((category) => (
+                    <Picker.Item key={category.id} label={category.name} value={category.id.toString()} />
+                ))}
             </Picker>
             <Picker
                 selectedValue={itemBoxId}
                 style={styles.input}
                 onValueChange={(itemValue) => setItemBoxId(itemValue)}
             >
-                <Picker.Item label="Select box ID" value="" />
-                <Picker.Item label="Box 1" value="Box 1" />
-                <Picker.Item label="Box 2" value="Box 2" />
-            </Picker> 
+                <Picker.Item label="Select box" value="" />
+                {boxes.map((box) => (
+                    <Picker.Item key={box.id} label={box.name} value={box.id.toString()} />
+                ))}
+            </Picker>
             <TextInput
                 style={styles.input}
                 value={itemDescription}
