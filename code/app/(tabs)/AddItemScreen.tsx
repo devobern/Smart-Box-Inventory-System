@@ -1,66 +1,45 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
-import { useItemContext } from '../ItemContext'; // Adjust the path to your ItemContext
+import { Picker } from '@react-native-picker/picker';
+import { useItemContext } from '../ItemContext';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { Item } from '../types/item';
 
 type RootStackParamList = {
     index: undefined;
-    AddItemScreen: undefined; // Include all screen names in your navigation stack
+    AddItemScreen: undefined;
 };
-
-function createItem(
-    name: string,
-    category: string,
-    boxId: string,
-    description?: string,
-    location?: string,
-    quantity?: number,
-    photoUrl?: string,
-): Item {
-    return {
-        name,
-        category,
-        boxId,
-        description,
-        location,
-        quantity: quantity ? parseInt(String(quantity), 10) : undefined,
-        photoUrl,
-        dateAdded: new Date(),  // Automatically set to the current date
-        tags: [],
-        lastUpdated: new Date(), // Automatically set to the current date when creating new item
-    };
-}
 
 export default function AddItemScreen() {
     const [itemName, setItemName] = useState('');
     const [itemCategory, setItemCategory] = useState('');
     const [itemBoxId, setItemBoxId] = useState('');
     const [itemDescription, setItemDescription] = useState('');
-    const [itemLocation, setItemLocation] = useState('');
-    const [itemQuantity, setItemQuantity] = useState('');
+    const [itemQuantity, setItemQuantity] = useState('1'); // Set default quantity to "1"
     const [itemPhotoUrl, setItemPhotoUrl] = useState('');
     const { addItem } = useItemContext();
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const handleAddItem = () => {
         if (itemName && itemCategory && itemBoxId) {
-            const newItem = createItem(
-                itemName,
-                itemCategory,
-                itemBoxId,
-                itemDescription,
-                itemLocation,
-                itemQuantity ? parseInt(itemQuantity, 10) : undefined,
-                itemPhotoUrl,
-            );
+            const newItem = {
+                name: itemName,
+                category: itemCategory,
+                boxId: itemBoxId,
+                description: itemDescription || undefined,
+                quantity: itemQuantity ? parseInt(itemQuantity, 10) : undefined,
+                photoUrl: itemPhotoUrl || undefined,
+                dateAdded: new Date(),
+                tags: [],
+                lastUpdated: new Date(),
+            };
             addItem(newItem);
+
+            // Clear form inputs after adding item, with quantity resetting to "1"
             setItemName('');
             setItemCategory('');
             setItemBoxId('');
             setItemDescription('');
-            setItemLocation('');
-            setItemQuantity('');
+            setItemQuantity('1'); // Reset to default quantity
             setItemPhotoUrl('');
             navigation.navigate('index');
         }
@@ -75,42 +54,43 @@ export default function AddItemScreen() {
                 onChangeText={setItemName}
                 placeholder="Enter item name"
             />
-            <TextInput
+            <Picker
+                selectedValue={itemCategory}
                 style={styles.input}
-                value={itemCategory}
-                onChangeText={setItemCategory}
-                placeholder="Enter item category"
-            />
-            <TextInput
+                onValueChange={(itemValue) => setItemCategory(itemValue)}
+            >
+                <Picker.Item label="Select category" value="" />
+                <Picker.Item label="Clothing" value="Clothing" />
+                <Picker.Item label="Electronics" value="Electronics" />
+                <Picker.Item label="Furniture" value="Furniture" />
+            </Picker>
+            <Picker
+                selectedValue={itemBoxId}
                 style={styles.input}
-                value={itemBoxId}
-                onChangeText={setItemBoxId}
-                placeholder="Enter box ID"
-            />
+                onValueChange={(itemValue) => setItemBoxId(itemValue)}
+            >
+                <Picker.Item label="Select box ID" value="" />
+                <Picker.Item label="Box 1" value="Box 1" />
+                <Picker.Item label="Box 2" value="Box 2" />
+            </Picker>
             <TextInput
                 style={styles.input}
                 value={itemDescription}
                 onChangeText={setItemDescription}
-                placeholder="Enter item description"
-            />
-            <TextInput
-                style={styles.input}
-                value={itemLocation}
-                onChangeText={setItemLocation}
-                placeholder="Enter item location"
+                placeholder="Enter item description (optional)"
             />
             <TextInput
                 style={styles.input}
                 value={itemQuantity}
                 onChangeText={setItemQuantity}
-                placeholder="Enter item quantity"
+                placeholder="Enter item quantity (optional)"
                 keyboardType="numeric"
             />
             <TextInput
                 style={styles.input}
                 value={itemPhotoUrl}
                 onChangeText={setItemPhotoUrl}
-                placeholder="Enter photo URL"
+                placeholder="Enter photo URL (optional)"
             />
             <Button title="Add Item" onPress={handleAddItem} />
         </View>
