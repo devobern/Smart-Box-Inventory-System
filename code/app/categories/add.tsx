@@ -104,6 +104,7 @@ const AddCategoryScreen = () => {
         <View style={styles.container}>
             <Text style={styles.text}>Name</Text>
             <TextInput
+                autoFocus
                 placeholder="Enter category name"
                 value={name}
                 onChangeText={setName}

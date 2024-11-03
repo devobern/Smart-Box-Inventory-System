@@ -4,6 +4,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import * as db from "@/services/database"; // Import database functions
 import {router, useLocalSearchParams} from 'expo-router';
+import { box } from "../types/box";
 
 type RootStackParamList = {
     index: undefined;
@@ -53,6 +54,10 @@ export default function Screen() {
                 const result = await db.getBoxes();
                 if (Array.isArray(result)) {
                     setBoxes(result as Box[]);
+                    let defaultBoxId = Math.min(...result.map((box) => Number((box as box).id)))
+                    if (itemBoxId == '') {
+                        setItemBoxId(String(defaultBoxId));
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching boxes:', error);
