@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { Text, View, StyleSheet, TextInput, Button, TouchableOpacity } from "react-native";
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { Picker } from '@react-native-picker/picker';
+import {useEffect, useState} from "react";
+import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {Picker} from '@react-native-picker/picker';
 import * as db from "@/services/database"; // Import database functions
 import {router, useLocalSearchParams} from 'expo-router';
-import { box } from "../types/box";
+import {box} from "../types/box";
 
 type RootStackParamList = {
     index: undefined;
@@ -23,7 +23,7 @@ type Box = {
 };
 
 export default function Screen() {
-    const { boxId } = useLocalSearchParams<{ boxId: string }>(); // Get boxId from the route parameters
+    const {boxId} = useLocalSearchParams<{ boxId: string }>(); // Get boxId from the route parameters
 
     const [itemName, setItemName] = useState('');
     const [itemCategory, setItemCategory] = useState<string>('1');
@@ -193,9 +193,9 @@ export default function Screen() {
                 style={styles.inputText}
                 onValueChange={(itemValue) => setItemCategory(itemValue)}
             >
-                <Picker.Item label="Select category" value="" />
+                <Picker.Item label="Select category" value=""/>
                 {categories.map((category) => (
-                    <Picker.Item key={category.id} label={category.name} value={category.id.toString()} />
+                    <Picker.Item key={category.id} label={category.name} value={category.id.toString()}/>
                 ))}
             </Picker>
             <Text style={styles.text}>Box *</Text>
@@ -207,9 +207,9 @@ export default function Screen() {
                     style={styles.inputText}
                     onValueChange={(itemValue) => setItemBoxId(itemValue)}
                 >
-                    <Picker.Item label="Select box" value="" />
+                    <Picker.Item label="Select box" value=""/>
                     {boxes.map((box) => (
-                        <Picker.Item key={box.id} label={box.name} value={box.id.toString()} />
+                        <Picker.Item key={box.id} label={box.name} value={box.id.toString()}/>
                     ))}
                 </Picker>
             )}
