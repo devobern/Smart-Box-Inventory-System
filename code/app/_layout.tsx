@@ -57,7 +57,7 @@ export default function RootLayout() {
   });
 
 
-  const hideNavBarRoutes = ['boxes/details', 'boxes/edit', 'items/details'];
+  const hideNavBarRoutes = ['scanner'];
 
   return (
       <PaperProvider theme={theme}>
