@@ -90,7 +90,7 @@ export default function Index() {
     const [boxes, setBoxes] = useState<box[]>([]);
     const [categories, setCategories] = useState<category[]>([]);
     const [locations, setLocations] = useState<location[]>([]);
-
+    const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
 
     const onEdit = (id: number) => {
         router.push(`/boxes/edit?boxId=${id}`);
@@ -178,6 +178,7 @@ export default function Index() {
                 }
             });
         });
+        setIsInitialLoadComplete(true);
     }, []);
 
     const fetchBoxes = async () => {
@@ -193,7 +194,9 @@ export default function Index() {
 
     useFocusEffect(
         useCallback(() => {
-            fetchBoxes();
+            if (isInitialLoadComplete) {
+                fetchBoxes();
+            }
         }, [])
     );
 
