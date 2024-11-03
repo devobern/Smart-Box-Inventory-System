@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from "react";
-import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity } from "react-native";
+import {SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {CameraView, useCameraPermissions} from "expo-camera";
-import { Stack } from "expo-router";
-import { router } from "expo-router";
+import {router, Stack} from "expo-router";
 import * as db from "../../services/database";
 
 export default function Index() {
@@ -28,30 +27,30 @@ export default function Index() {
      *
      * @param data The content of the code.
      */
-    // @ts-ignore
-    const handleBarcodeScanned = ({ data }) => {
-        if (!isScanned) {
-            setScannedText(data);
-            setIsScanned(true);
-            const boxId = Number(data);
-            if (!isNaN(boxId) && boxId >= 0) {
-                db.getBox(boxId).then(box => {
-                    console.log(box);
-                    if (box !== null) {
-                        setIsValid(true);
-                        // @ts-ignore
-                        setShowedText(box['name']);
-                    } else {
-                        setIsValid(false);
-                        setShowedText('Box not found');
-                    }
-                })
-            } else {
-                setIsValid(false);
-                setShowedText('Box not found');
+        // @ts-ignore
+    const handleBarcodeScanned = ({data}) => {
+            if (!isScanned) {
+                setScannedText(data);
+                setIsScanned(true);
+                const boxId = Number(data);
+                if (!isNaN(boxId) && boxId >= 0) {
+                    db.getBox(boxId).then(box => {
+                        console.log(box);
+                        if (box !== null) {
+                            setIsValid(true);
+                            // @ts-ignore
+                            setShowedText(box['name']);
+                        } else {
+                            setIsValid(false);
+                            setShowedText('Box not found');
+                        }
+                    })
+                } else {
+                    setIsValid(false);
+                    setShowedText('Box not found');
+                }
             }
-        }
-    };
+        };
 
     /**
      * Called when the scan is successful and the user click the "Go to Box" button.
@@ -87,17 +86,18 @@ export default function Index() {
                 {/* Overlay */}
                 <View style={styles.overlay}>
                     <View style={styles.scanBox}>
-                        <View style={styles.topLeftCorner} />
-                        <View style={styles.topRightCorner} />
-                        <View style={styles.bottomLeftCorner} />
-                        <View style={styles.bottomRightCorner} />
+                        <View style={styles.topLeftCorner}/>
+                        <View style={styles.topRightCorner}/>
+                        <View style={styles.bottomLeftCorner}/>
+                        <View style={styles.bottomRightCorner}/>
                     </View>
                 </View>
             </CameraView>
             {scannedText ? (
                 <View style={styles.resultContainer}>
                     <Text style={styles.resultText}>{showedText}</Text>
-                    <TouchableOpacity style={[styles.resetButton, { display: !isValidId ? "none" : "flex" }]} onPress={handleSuccessfulScan}>
+                    <TouchableOpacity style={[styles.resetButton, {display: !isValidId ? "none" : "flex"}]}
+                                      onPress={handleSuccessfulScan}>
                         <Text style={styles.resetButtonText}>See box detail</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.resetButton} onPress={handleResetScan}>
