@@ -56,7 +56,7 @@ export default function RootLayout() {
     fontWeight: currentRoute === routeName ? 'bold' : 'normal',
   });
 
-  // Elenco delle route dove vuoi nascondere la navbar
+
   const hideNavBarRoutes = ['boxes/details', 'boxes/edit', 'items/details'];
 
   return (
@@ -104,8 +104,7 @@ export default function RootLayout() {
                 <Ionicons name="location-outline" size={22} color={getNavItemStyle("location").color} />
                 <Text style={[styles.navText, getNavItemStyle("location")]}>Locations</Text>
               </TouchableOpacity>
-
-              {/* Central search button */}
+              
               <TouchableOpacity style={styles.centralButton} onPress={() => router.push('/search')}>
                 <Ionicons name="search-outline" size={26} color="white" />
               </TouchableOpacity>
