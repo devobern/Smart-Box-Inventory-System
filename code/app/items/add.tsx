@@ -1,10 +1,10 @@
-import {useEffect, useState} from "react";
-import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {Picker} from '@react-native-picker/picker';
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
 import * as db from "@/services/database"; // Import database functions
-import {router, useLocalSearchParams} from 'expo-router';
-import {box} from "../types/box";
+import { router, useLocalSearchParams } from 'expo-router';
+import { box } from "../types/box";
 
 type RootStackParamList = {
     index: undefined;
@@ -23,7 +23,7 @@ type Box = {
 };
 
 export default function Screen() {
-    const {boxId} = useLocalSearchParams<{ boxId: string }>(); // Get boxId from the route parameters
+    const { boxId } = useLocalSearchParams<{ boxId: string }>(); // Get boxId from the route parameters
 
     const [itemName, setItemName] = useState('');
     const [itemCategory, setItemCategory] = useState<string>('1');
@@ -32,7 +32,7 @@ export default function Screen() {
     const [itemQuantity, setItemQuantity] = useState('1'); // Default quantity
     const [itemPhotoUrl, setItemPhotoUrl] = useState('');
     const [categories, setCategories] = useState<Category[]>([]); // State to store categories
-    const [boxes, setBoxes] = useState<Box[]>([]); // State to store boxes
+    const [boxes, setBoxes] = useState<Box[] | null>(null); // State to store boxes
     const [errorMessage, setErrorMessage] = useState(''); // State to store error messages
 
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -60,8 +60,8 @@ export default function Screen() {
                         setItemBoxId(''); // Ensure itemBoxId is empty
                     } else {
                         // Boxes exist
-                        let defaultBoxId = Math.min(...result.map((box) => Number((box as box).id)))
-                        if (itemBoxId == '') {
+                        let defaultBoxId = Math.min(...result.map((box) => Number((box as box).id)));
+                        if (itemBoxId === '') {
                             setItemBoxId(String(defaultBoxId));
                         }
                     }
@@ -105,7 +105,7 @@ export default function Screen() {
                     setItemQuantity('1'); // Reset to default quantity
                     setItemPhotoUrl('');
                     setErrorMessage(''); // Clear any existing error messages
-                    router.push(`/boxes/details?id=${newItem.boxId}`)
+                    router.push(`/boxes/details?id=${newItem.boxId}`);
                 } else {
                     console.error('Failed to add item');
                 }
@@ -158,43 +158,6 @@ export default function Screen() {
             fontWeight: 'bold',
             color: 'white',
         },
-        modalContainer: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        },
-        modalContent: {
-            width: 300,
-            padding: 20,
-            backgroundColor: 'white',
-            borderRadius: 10,
-            alignItems: 'center',
-        },
-        modalText: {
-            fontSize: 18,
-            marginBottom: 20,
-        },
-        printButton: {
-            marginTop: 20,
-            padding: 10,
-            backgroundColor: 'black',
-            borderRadius: 5,
-        },
-        printButtonText: {
-            color: 'white',
-            fontWeight: 'bold',
-        },
-        backButton: {
-            marginTop: 10,
-            padding: 10,
-            backgroundColor: 'grey',
-            borderRadius: 5,
-        },
-        backButtonText: {
-            color: 'white',
-            fontWeight: 'bold',
-        },
         errorText: {
             color: 'red',
             margin: 10,
@@ -203,7 +166,10 @@ export default function Screen() {
 
     return (
         <View style={styles.container}>
-            {boxes.length === 0 ? (
+            {boxes === null ? (
+                // Optionally, you can show a loading indicator here
+                <Text>Loading boxes...</Text>
+            ) : boxes.length === 0 ? (
                 <View>
                     <Text style={styles.text}>No boxes exist. Please create a box first.</Text>
                     <TouchableOpacity style={styles.saveButton} onPress={() => router.push('/boxes/add')}>
@@ -226,9 +192,9 @@ export default function Screen() {
                         style={styles.inputText}
                         onValueChange={(itemValue) => setItemCategory(itemValue)}
                     >
-                        <Picker.Item label="Select category" value=""/>
+                        <Picker.Item label="Select category" value="" />
                         {categories.map((category) => (
-                            <Picker.Item key={category.id} label={category.name} value={category.id.toString()}/>
+                            <Picker.Item key={category.id} label={category.name} value={category.id.toString()} />
                         ))}
                     </Picker>
                     <Text style={styles.text}>Box *</Text>
@@ -240,9 +206,9 @@ export default function Screen() {
                             style={styles.inputText}
                             onValueChange={(itemValue) => setItemBoxId(itemValue)}
                         >
-                            <Picker.Item label="Select box" value=""/>
+                            <Picker.Item label="Select box" value="" />
                             {boxes.map((box) => (
-                                <Picker.Item key={box.id} label={box.name} value={box.id.toString()}/>
+                                <Picker.Item key={box.id} label={box.name} value={box.id.toString()} />
                             ))}
                         </Picker>
                     )}
