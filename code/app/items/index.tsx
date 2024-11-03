@@ -1,33 +1,113 @@
-import FloatingActionButton from "@/components/fab";
-import { useState, useCallback } from "react";
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, { useCallback, useState } from "react";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import * as db from "@/services/database";
 import { useFocusEffect } from "@react-navigation/native";
-import {Ionicons} from "@expo/vector-icons";
-import {router} from "expo-router";
+import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+
+const Index = () => {
+    const [items, setItems] = useState<any[]>([]);
+
+    const fetchItems = async () => {
+        try {
+            const dbItems = await db.getItems();
+            if (dbItems) {
+                setItems(dbItems);
+            }
+        } catch (error) {
+            console.error("Error fetching items:", error);
+        }
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchItems();
+        }, [])
+    );
+
+    const onEdit = (id: number) => {
+        router.push(`/items/edit?itemId=${id}`);
+    };
+
+    const onDelete = (id: number) => {
+        Alert.alert(
+            "Confirm Delete",
+            "Are you sure you want to delete this item?",
+            [
+                { text: "Cancel", style: "cancel" },
+                { text: "Delete", style: "destructive", onPress: () => handleDelete(id) }
+            ]
+        );
+    };
+
+    const handleDelete = async (id: number) => {
+        try {
+            await db.deleteItem(id); // Assicurati che la funzione deleteItem esista
+            setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+        } catch (err) {
+            console.log("Error deleting item:", err);
+        }
+    };
+
+    const renderItem = ({ item }: { item: { id: number; name: string; quantity: number; description?: string } }) => (
+        <Swipeable
+            renderLeftActions={() => (
+                <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => onDelete(item.id)}>
+                    <Text style={styles.actionText}>Delete</Text>
+                </TouchableOpacity>
+            )}
+            renderRightActions={() => (
+                <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => onDelete(item.id)}>
+                    <Text style={styles.actionText}>Delete</Text>
+                </TouchableOpacity>
+            )}
+            overshootLeft={false}
+            overshootRight={false}
+        >
+            <View style={styles.listItemContainer}>
+                <Text style={styles.itemName}>Name: {item.name}</Text>
+                <Text>Quantity: {item.quantity}</Text>
+                {item.description && <Text>Description: {item.description}</Text>}
+            </View>
+        </Swipeable>
+    );
+
+    return (
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <View style={styles.container}>
+                <Text style={styles.title}>List of Items:</Text>
+                <FlatList
+                    data={items}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderItem}
+                />
+                <View style={styles.container_r}>
+                    <TouchableOpacity style={styles.mainButton} onPress={() => router.push(`/items/add`)}>
+                        <Ionicons name="add" size={24} color="white" />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </GestureHandlerRootView>
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
         padding: 16,
-    },
-    container_r: {
-        position: "absolute",
-        bottom: 30,
-        right: 30,
-        alignItems: "center",
+        backgroundColor: '#f9f9f9',
     },
     title: {
         fontSize: 18,
-        marginBottom: 8,
+        padding: 10,
+        marginTop: 10,
     },
-    listItem: {
-        padding: 16,
+    listItemContainer: {
+        backgroundColor: "white",
+        padding: 20,
         borderBottomColor: "#ccc",
         borderBottomWidth: 1,
-        width: "100%",
     },
     itemName: {
         fontWeight: "bold",
@@ -42,49 +122,29 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         elevation: 5,
     },
+    actionButton: {
+        justifyContent: "center",
+        alignItems: "center",
+        width: 80,
+        height: "100%",
+    },
+    editButton: {
+        backgroundColor: "#4CAF50",
+    },
+    deleteButton: {
+        backgroundColor: "#F44336",
+    },
+    actionText: {
+        color: "white",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    container_r: {
+        position: "absolute",
+        bottom: 30,
+        right: 30,
+        alignItems: "center",
+    },
 });
 
-export default function Index() {
-    const [items, setItems] = useState<any[]>([]);
-
-    useFocusEffect(
-        useCallback(() => {
-            const fetchItems = async () => {
-                try {
-                    const dbItems = await db.getItems();
-                    if (dbItems !== null) {
-                        setItems(dbItems);
-                    }
-                } catch (error) {
-                    console.error("Error fetching items: ", error);
-                }
-            };
-
-            fetchItems();
-        }, [])
-    );
-
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>List of Items:</Text>
-            <FlatList
-                data={items}
-                keyExtractor={(item) => item?.id?.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.listItem}>
-                        <Text style={styles.itemName}>Name: {item?.name}</Text>
-                        <Text>Quantity: {item?.quantity}</Text>
-                        {item?.description && (
-                            <Text>Description: {item.description}</Text>
-                        )}
-                    </View>
-                )}
-            />
-            <View style={styles.container_r}>
-                <TouchableOpacity style={styles.mainButton} onPress={() => router.push(`/items/add`)}>
-                    <Ionicons name="add" size={24} color="white" />
-                </TouchableOpacity>
-            </View>
-        </View>
-    );
-}
+export default Index;
