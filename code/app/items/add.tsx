@@ -25,7 +25,7 @@ export default function Screen() {
     const { boxId } = useLocalSearchParams<{ boxId: string }>(); // Get boxId from the route parameters
 
     const [itemName, setItemName] = useState('');
-    const [itemCategory, setItemCategory] = useState<string>('');
+    const [itemCategory, setItemCategory] = useState<string>('1');
     const [itemBoxId, setItemBoxId] = useState<string>(boxId ? boxId : ''); // Set initial box ID if it exists
     const [itemDescription, setItemDescription] = useState('');
     const [itemQuantity, setItemQuantity] = useState('1'); // Default quantity
@@ -174,14 +174,15 @@ export default function Screen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Name</Text>
+            <Text style={styles.text}>Name *</Text>
             <TextInput
+                autoFocus
                 style={styles.inputText}
                 value={itemName}
                 onChangeText={setItemName}
                 placeholder="Enter item name"
             />
-            <Text style={styles.text}>Category</Text>
+            <Text style={styles.text}>Category *</Text>
             <Picker
                 selectedValue={itemCategory}
                 style={styles.inputText}
@@ -192,7 +193,7 @@ export default function Screen() {
                     <Picker.Item key={category.id} label={category.name} value={category.id.toString()} />
                 ))}
             </Picker>
-            <Text style={styles.text}>Box</Text>
+            <Text style={styles.text}>Box *</Text>
             {boxId ? (
                 <Text style={styles.text}>Box ID: {boxId}</Text>
             ) : (

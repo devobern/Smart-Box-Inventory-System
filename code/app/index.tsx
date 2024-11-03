@@ -123,6 +123,7 @@ export default function Index() {
     };
 
     const presetCategories = [
+        { name: "Miscellaneous" },
         { name: "Electronics" },
         { name: "Home Appliances" },
         { name: "Books" },
@@ -136,6 +137,7 @@ export default function Index() {
     ];
 
     const presetLocations = [
+        { name: "General" },
         { name: "Living room" },
         { name: "Bath" },
         { name: "Kitchen" },
