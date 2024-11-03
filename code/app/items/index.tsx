@@ -1,7 +1,9 @@
 import FloatingActionButton from "@/components/fab";
-import {useEffect, useState} from "react";
-import {FlatList, StyleSheet, Text, View} from "react-native";
+import React, { useEffect, useState } from "react";
+import {FlatList, Text, View, StyleSheet, TouchableOpacity} from "react-native";
 import * as db from "@/services/database";
+import {router} from "expo-router";
+import {Ionicons} from "@expo/vector-icons";
 
 const styles = StyleSheet.create({
     container: {
@@ -9,6 +11,12 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         padding: 16,
+    },
+    container_r: {
+        position: "absolute",
+        bottom: 30,
+        right: 30,
+        alignItems: "center",
     },
     title: {
         fontSize: 18,
@@ -23,6 +31,15 @@ const styles = StyleSheet.create({
     itemName: {
         fontWeight: "bold",
         fontSize: 16,
+    },
+    mainButton: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: "#2196F3",
+        alignItems: "center",
+        justifyContent: "center",
+        elevation: 5,
     },
 });
 
@@ -58,7 +75,11 @@ export default function Index() {
                     </View>
                 )}
             />
-            <FloatingActionButton route="/items/add"/>
+            <View style={styles.container_r}>
+                <TouchableOpacity style={styles.mainButton} onPress={() => router.push(`/items/add`)}>
+                    <Ionicons name="add" size={24} color="white" />
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }

@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Image } from "react-native";
 import FloatingActionButton from "@/components/AddButton";
-import { useFocusEffect, router } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import * as db from "@/services/database";
 import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import { List } from "react-native-paper";
+import {router} from "expo-router";
 
 const CategoriesOverview = () => {
     const [categories, setCategories] = useState<Array<{ id: number; name: string }>>([]);
@@ -84,11 +85,8 @@ const CategoriesOverview = () => {
                     renderItem={renderCategoryItem}
                 />
                 <View style={styles.container_r}>
-                    <FloatingActionButton route="/categories/add" />
-                </View>
-                <View style={styles.container_l}>
-                    <TouchableOpacity style={styles.btn} onPress={() => router.push(`/scanner`)}>
-                        <Ionicons name="scan-outline" size={30} color="white" />
+                    <TouchableOpacity style={styles.mainButton} onPress={() => router.push(`/categories/add`)}>
+                        <Ionicons name="add" size={24} color="white" />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -100,6 +98,15 @@ const styles = StyleSheet.create({
     listItemContainer: {
         backgroundColor: "white",
         padding: 10,
+    },
+    mainButton: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: "#2196F3",
+        alignItems: "center",
+        justifyContent: "center",
+        elevation: 5,
     },
     actionButton: {
         justifyContent: "center",

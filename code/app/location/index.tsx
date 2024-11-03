@@ -1,11 +1,12 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import FloatingActionButton from "@/components/AddButton";
-import {router, useFocusEffect} from "@react-navigation/native";
+import { useFocusEffect} from "@react-navigation/native";
 import * as db from "@/services/database";
-import {GestureHandlerRootView, Swipeable} from "react-native-gesture-handler";
-import {Ionicons} from "@expo/vector-icons";
-import {List} from "react-native-paper";
+import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
+import { Ionicons } from "@expo/vector-icons";
+import { List } from "react-native-paper";
+import {router} from "expo-router";
 
 const LocationsOverview = () => {
     const [locations, setLocations] = useState<Array<{ id: number; name: string }>>([]);
@@ -92,11 +93,8 @@ const LocationsOverview = () => {
                     renderItem={renderLocationItem}
                 />
                 <View style={styles.container_r}>
-                    <FloatingActionButton route="/location/add"/>
-                </View>
-                <View style={styles.container_l}>
-                    <TouchableOpacity style={styles.btn} onPress={() => router.push(`/scanner`)}>
-                        <Ionicons name="scan-outline" size={30} color="white"/>
+                    <TouchableOpacity style={styles.mainButton} onPress={() => router.push(`/location/add`)}>
+                        <Ionicons name="add" size={24} color="white" />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -114,6 +112,15 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: 80,
         height: "100%",
+    },
+    mainButton: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: "#2196F3",
+        alignItems: "center",
+        justifyContent: "center",
+        elevation: 5,
     },
     editButton: {
         backgroundColor: "#4CAF50",
