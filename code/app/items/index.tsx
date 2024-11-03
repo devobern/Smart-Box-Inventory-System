@@ -1,7 +1,8 @@
 import FloatingActionButton from "@/components/fab";
-import {useEffect, useState} from "react";
-import {FlatList, StyleSheet, Text, View} from "react-native";
+import { useState, useCallback } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import * as db from "@/services/database";
+import { useFocusEffect } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
     container: {
@@ -29,20 +30,22 @@ const styles = StyleSheet.create({
 export default function Index() {
     const [items, setItems] = useState<any[]>([]);
 
-    useEffect(() => {
-        const fetchItems = async () => {
-            try {
-                const dbItems = await db.getItems();
-                if (dbItems !== null) {
-                    setItems(dbItems);
+    useFocusEffect(
+        useCallback(() => {
+            const fetchItems = async () => {
+                try {
+                    const dbItems = await db.getItems();
+                    if (dbItems !== null) {
+                        setItems(dbItems);
+                    }
+                } catch (error) {
+                    console.error("Error fetching items: ", error);
                 }
-            } catch (error) {
-                console.error("Error fetching items: ", error);
-            }
-        };
+            };
 
-        fetchItems();
-    }, []);
+            fetchItems();
+        }, [])
+    );
 
     return (
         <View style={styles.container}>
@@ -50,15 +53,17 @@ export default function Index() {
             <FlatList
                 data={items}
                 keyExtractor={(item) => item?.id?.toString()}
-                renderItem={({item}) => (
+                renderItem={({ item }) => (
                     <View style={styles.listItem}>
                         <Text style={styles.itemName}>Name: {item?.name}</Text>
                         <Text>Quantity: {item?.quantity}</Text>
-                        {item?.description && <Text>Description: {item.description}</Text>}
+                        {item?.description && (
+                            <Text>Description: {item.description}</Text>
+                        )}
                     </View>
                 )}
             />
-            <FloatingActionButton route="/items/add"/>
+            <FloatingActionButton route="/items/add" />
         </View>
     );
 }
