@@ -1,12 +1,12 @@
 import FloatingActionButton from "@/components/fab";
 import { router, useLocalSearchParams } from 'expo-router';
-import { FlatList, Text, View, StyleSheet, Pressable, Modal, Image } from "react-native";
+import {FlatList, Text, View, StyleSheet, Pressable, Modal, Image, TouchableOpacity} from "react-native";
 import * as db from "@/services/database";
 import { Item } from "@/app/types/item";
 import QRCode from "react-native-qrcode-svg";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as Print from "expo-print";
-import { MaterialIcons } from "@expo/vector-icons";
+import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import { List } from "react-native-paper";
 
 const styles = StyleSheet.create({
@@ -41,10 +41,8 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start', // Align button to the left
         flexDirection: 'row', // Display icon and text in a row
         alignItems: 'center', // Center icon and text vertically
-        padding: 10,
+        padding: 16,
         backgroundColor: '#007bff',
-        borderRadius: 5,
-        marginBottom: 16,
     },
     qrButtonText: {
         color: 'white',
@@ -82,6 +80,27 @@ const styles = StyleSheet.create({
     backButtonText: {
         color: 'white',
         fontWeight: 'bold',
+    },
+    mainButton: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: "#2196F3",
+        alignItems: "center",
+        justifyContent: "center",
+        elevation: 5,
+    },
+    container_r: {
+        position: "absolute",
+        bottom: 30,
+        right: 30,
+        alignItems: "center",
+    },
+    container_l: {
+        position: "absolute",
+        bottom: 30,
+        left: 30,
+        alignItems: "center",
     },
 });
 
@@ -147,11 +166,17 @@ export default function BoxDetails() {
                     />
                 )}
             />
-            <Pressable style={styles.qrButton} onPress={() => setModalVisible(true)}>
-                <MaterialIcons name="qr-code" size={24} color="white" />
-                <Text style={styles.qrButtonText}>View QR Code</Text>
-            </Pressable>
-            <FloatingActionButton route={`/items/add?boxId=${id}`} />
+            <View style={styles.container_l}>
+                <Pressable style={styles.qrButton} onPress={() => setModalVisible(true)}>
+                    <MaterialIcons name="qr-code" size={24} color="white" />
+                    <Text style={styles.qrButtonText}>View QR Code</Text>
+                </Pressable>
+            </View>
+            <View style={styles.container_r}>
+                <TouchableOpacity style={styles.mainButton} onPress={() => router.push(`/boxes/add`)}>
+                    <Ionicons name="add" size={24} color="white" />
+                </TouchableOpacity>
+            </View>
 
             <Modal
                 visible={modalVisible}

@@ -1,8 +1,12 @@
-import React, { useCallback, useState } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
-import FloatingActionButton from "@/components/fab";
-import { useFocusEffect } from "@react-navigation/native";
-import * as db from "@/services/database"; // Import database functions
+import React, {useCallback, useEffect, useState} from "react";
+import {Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import FloatingActionButton from "@/components/AddButton";
+import { useFocusEffect} from "@react-navigation/native";
+import * as db from "@/services/database";
+import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
+import { Ionicons } from "@expo/vector-icons";
+import { List } from "react-native-paper";
+import {router} from "expo-router";
 
 const LocationsOverview = () => {
     const [locations, setLocations] = useState<Array<{ id: number; name: string }>>([]);
@@ -24,46 +28,131 @@ const LocationsOverview = () => {
         }, [])
     );
 
-    const renderLocationItem = ({ item }: { item: { id: number; name: string } }) => (
-        <View style={styles.locationItem}>
-            <Text style={styles.locationName}>{item.name}</Text>
-        </View>
+    useEffect(() => {
+        db.createTables().then(() => {
+            db.getLocations().then((data) => {
+                if (data) setLocations(data as Array<{ id: number; name: string }>);
+            });
+        });
+    }, []);
+
+    const onEdit = (id: number) => {
+        router.push(`/locations/edit?locationId=${id}`);
+    };
+
+    const onDelete = (id: number) => {
+        Alert.alert(
+            "Confirm Delete",
+            "Are you sure you want to delete this location?",
+            [
+                {text: "Cancel", style: "cancel"},
+                {text: "Delete", style: "destructive", onPress: () => handleDelete(id)}
+            ]
+        );
+    };
+
+    const handleDelete = async (id: number) => {
+        try {
+            await db.deleteLocation(id);
+            setLocations((prevLocations) => prevLocations.filter((location) => location.id !== id));
+        } catch (err) {
+            console.log("Error deleting location:", err);
+        }
+    };
+
+    const renderLocationItem = ({item}: { item: { id: number; name: string } }) => (
+        <Swipeable
+            renderLeftActions={() => (
+                <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => onDelete(item.id)}>
+                    <Text style={styles.actionText}>Delete</Text>
+                </TouchableOpacity>
+            )}
+            renderRightActions={() => (
+                <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => onDelete(item.id)}>
+                    <Text style={styles.actionText}>Delete</Text>
+                </TouchableOpacity>
+            )}
+            overshootLeft={false}
+            overshootRight={false}
+        >
+            <View style={styles.listItemContainer}>
+                <List.Item
+                    title={item.name}
+                    left={() => <Image source={require("@/assets/images/location.png")}
+                                       style={{width: 24, height: 24}}/>}/>
+            </View>
+        </Swipeable>
     );
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Locations Overview</Text>
-            <FlatList
-                data={locations}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderLocationItem}
-            />
-            <FloatingActionButton
-                route="/location/add"
-            />
-        </View>
+        <GestureHandlerRootView style={{flex: 1}}>
+            <View style={{flex: 1}}>
+                <FlatList
+                    data={locations}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderLocationItem}
+                />
+                <View style={styles.container_r}>
+                    <TouchableOpacity style={styles.mainButton} onPress={() => router.push(`/location/add`)}>
+                        <Ionicons name="add" size={24} color="white" />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </GestureHandlerRootView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 16,
-        backgroundColor: "#fff",
+    listItemContainer: {
+        backgroundColor: "white",
+        padding: 10,
     },
-    header: {
-        fontSize: 24,
+    actionButton: {
+        justifyContent: "center",
+        alignItems: "center",
+        width: 80,
+        height: "100%",
+    },
+    mainButton: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: "#2196F3",
+        alignItems: "center",
+        justifyContent: "center",
+        elevation: 5,
+    },
+    editButton: {
+        backgroundColor: "#4CAF50",
+    },
+    deleteButton: {
+        backgroundColor: "#F44336",
+    },
+    actionText: {
+        color: "white",
+        fontSize: 16,
         fontWeight: "bold",
-        marginBottom: 16,
     },
-    locationItem: {
-        padding: 16,
-        backgroundColor: "#f9f9f9",
-        borderBottomWidth: 1,
-        borderBottomColor: "#ddd",
+    container_r: {
+        position: "absolute",
+        bottom: 30,
+        right: 30,
+        alignItems: "center",
     },
-    locationName: {
-        fontSize: 18,
+    container_l: {
+        position: "absolute",
+        bottom: 30,
+        left: 30,
+        alignItems: "center",
+    },
+    btn: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: "#2196F3",
+        alignItems: "center",
+        justifyContent: "center",
+        elevation: 5,
     },
 });
 

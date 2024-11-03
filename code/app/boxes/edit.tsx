@@ -1,13 +1,12 @@
-import { Button, StyleSheet, TextInput, Text, View, Pressable, Modal } from "react-native";
-import { useState, useEffect } from "react";
+import {Pressable, StyleSheet, Text, TextInput, View} from "react-native";
+import {useEffect, useState} from "react";
 import * as DB from "@/services/database";
-import {router, useLocalSearchParams} from "expo-router";
-import { Picker } from '@react-native-picker/picker';
 import * as db from "@/services/database";
-import {box} from "@/app/types/box";
+import {router, useLocalSearchParams} from "expo-router";
+import {Picker} from '@react-native-picker/picker';
 
 export default function EditBox() {
-    const { boxId } = useLocalSearchParams();
+    const {boxId} = useLocalSearchParams();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [locationId, setLocationId] = useState<number>(0);
@@ -75,9 +74,9 @@ export default function EditBox() {
                 style={styles.inputText}
                 onValueChange={(itemValue) => setLocationId(itemValue)}
             >
-                <Picker.Item label="Select location" value="" />
+                <Picker.Item label="Select location" value=""/>
                 {locations.map((location) => (
-                    <Picker.Item key={location.id} label={location.name} value={location.id.toString()} />
+                    <Picker.Item key={location.id} label={location.name} value={location.id.toString()}/>
                 ))}
             </Picker>
             <Pressable

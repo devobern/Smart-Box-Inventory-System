@@ -1,7 +1,10 @@
 import FloatingActionButton from "@/components/fab";
-import { useEffect, useState } from "react";
-import { FlatList, Text, View, StyleSheet } from "react-native";
+import { useState, useCallback } from "react";
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import * as db from "@/services/database";
+import { useFocusEffect } from "@react-navigation/native";
+import {Ionicons} from "@expo/vector-icons";
+import {router} from "expo-router";
 
 const styles = StyleSheet.create({
     container: {
@@ -9,6 +12,12 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         padding: 16,
+    },
+    container_r: {
+        position: "absolute",
+        bottom: 30,
+        right: 30,
+        alignItems: "center",
     },
     title: {
         fontSize: 18,
@@ -24,25 +33,36 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 16,
     },
+    mainButton: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: "#2196F3",
+        alignItems: "center",
+        justifyContent: "center",
+        elevation: 5,
+    },
 });
 
 export default function Index() {
     const [items, setItems] = useState<any[]>([]);
 
-    useEffect(() => {
-        const fetchItems = async () => {
-            try {
-                const dbItems = await db.getItems();
-                if (dbItems !== null) {
-                    setItems(dbItems);
+    useFocusEffect(
+        useCallback(() => {
+            const fetchItems = async () => {
+                try {
+                    const dbItems = await db.getItems();
+                    if (dbItems !== null) {
+                        setItems(dbItems);
+                    }
+                } catch (error) {
+                    console.error("Error fetching items: ", error);
                 }
-            } catch (error) {
-                console.error("Error fetching items: ", error);
-            }
-        };
+            };
 
-        fetchItems();
-    }, []);
+            fetchItems();
+        }, [])
+    );
 
     return (
         <View style={styles.container}>
@@ -54,11 +74,17 @@ export default function Index() {
                     <View style={styles.listItem}>
                         <Text style={styles.itemName}>Name: {item?.name}</Text>
                         <Text>Quantity: {item?.quantity}</Text>
-                        {item?.description && <Text>Description: {item.description}</Text>}
+                        {item?.description && (
+                            <Text>Description: {item.description}</Text>
+                        )}
                     </View>
                 )}
             />
-            <FloatingActionButton route="/items/add" />
+            <View style={styles.container_r}>
+                <TouchableOpacity style={styles.mainButton} onPress={() => router.push(`/items/add`)}>
+                    <Ionicons name="add" size={24} color="white" />
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
