@@ -1,4 +1,4 @@
-import {Button, StyleSheet, TextInput, Text, View, TouchableOpacity} from "react-native";
+import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {useState} from "react";
 import * as db from "@/services/database";
 import {NavigationProp, useNavigation} from "@react-navigation/native";
