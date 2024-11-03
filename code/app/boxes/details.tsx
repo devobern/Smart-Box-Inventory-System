@@ -1,29 +1,27 @@
 import FloatingActionButton from "@/components/fab";
-import { router, useLocalSearchParams, useNavigation } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { FlatList, Text, View, StyleSheet, Pressable, Modal, Image } from "react-native";
 import * as db from "@/services/database";
 import { Item } from "@/app/types/item";
 import QRCode from "react-native-qrcode-svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Print from "expo-print";
-import { MaterialIcons } from "@expo/vector-icons"; // Import icon library
-import { box } from "../types/box";
+import { MaterialIcons } from "@expo/vector-icons";
 import { List } from "react-native-paper";
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
     },
     title: {
         fontSize: 18,
-        marginBottom: 8,
+        padding: 10,
+        marginTop: 10,
+        marginBottom: 10,
     },
     listItem: {
-        padding: 16,
-        borderBottomColor: '#ccc',
-        borderBottomWidth: 1,
-        width: '100%',
+        backgroundColor: "white",
+        padding: 20,
     },
     itemName: {
         fontWeight: 'bold',
@@ -84,20 +82,27 @@ const styles = StyleSheet.create({
 });
 
 export default function BoxDetails() {
-
     const { id } = useLocalSearchParams<{ id: string }>();
     const [modalVisible, setModalVisible] = useState(false);
-    let qrCodeRef: any = null; // Reference for QR Code
+    const [items, setItems] = useState<Item[]>([]);
+    const [boxName, setBoxName] = useState<string>("Untitled");
+    let qrCodeRef: any = null;
 
-    let items = [] as Item[];
-    db.getBoxItems(Number(id)).then((db_items) => {
-        if (db_items !== null) {
-            db_items.forEach((u_item) => {
-                let item = u_item as Item;
-                items.push(item);
-            });
-        }
-    });
+    useEffect(() => {
+        const fetchData = async () => {
+            const db_items = await db.getBoxItems(Number(id));
+            if (db_items) {
+                setItems(db_items as Item[]);
+            }
+
+            const box = await db.getBox(Number(id));
+            if (box) {
+                setBoxName(box.name);
+            }
+        };
+
+        fetchData();
+    }, [id]);
 
     const handlePrintQRCode = () => {
         if (qrCodeRef) {
@@ -111,13 +116,13 @@ export default function BoxDetails() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Your Items in box {id}:</Text>
+            <Text style={styles.title}>Your Items in box {boxName}:</Text>
             <FlatList
                 data={items}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <List.Item
-                        onPress={() => router.push(`/itemDetail?id=${item.id}`)}
+                    <List.Item style={styles.listItem}
+                        onPress={() => router.push(`/items/details?itemId=${item.id}`)}
                         title={item.name}
                         description={item.description}
                         left={() => <Image source={require("@/assets/images/item.png")} style={{ width: 24, height: 24 }} />}
@@ -131,7 +136,6 @@ export default function BoxDetails() {
             </Pressable>
             <FloatingActionButton route={`/items/add?boxId=${id}`} />
 
-            {/* Modal for QR Code display */}
             <Modal
                 visible={modalVisible}
                 transparent={true}
@@ -144,7 +148,7 @@ export default function BoxDetails() {
                         <QRCode
                             value={id}
                             size={200}
-                            getRef={(c) => (qrCodeRef = c)} // Assign QR code reference
+                            getRef={(c) => (qrCodeRef = c)}
                         />
                         <Pressable style={styles.printButton} onPress={handlePrintQRCode}>
                             <Text style={styles.printButtonText}>Print QR Code</Text>
