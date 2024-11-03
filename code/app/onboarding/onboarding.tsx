@@ -4,11 +4,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter, useNavigation } from 'expo-router'; // Assuming you're using Expo Router
 
 const onboardingScreens = [
-  require('../../assets/images/onboarding/screen_1.png'),
-  require('../../assets/images/onboarding/screen_2.png'),
-  require('../../assets/images/onboarding/screen_3.png'),
-  require('../../assets/images/onboarding/screen_4.png'),
-  require('../../assets/images/onboarding/screen_5.png'),
+  require('../../assets/images/onboarding/page_1.png'),
+  require('../../assets/images/onboarding/page_2.png'),
+  require('../../assets/images/onboarding/page_3.png'),
+  require('../../assets/images/onboarding/page_4.png'),
+  require('../../assets/images/onboarding/page_5.png'),
+  require('../../assets/images/onboarding/page_6.png'),
   // Add more screenshots as needed
 ];
 
