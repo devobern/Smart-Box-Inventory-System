@@ -194,6 +194,12 @@ export default function AddBox() {
                         <Pressable style={styles.printButton} onPress={handlePrintQRCode}>
                             <Text style={styles.printButtonText}>Print QR Code</Text>
                         </Pressable>
+                        <Pressable style={styles.saveButton} onPress={() => {
+                            setModalVisible(false);
+                            router.push(`/boxes/details?id=${boxId}`);
+                        }}>
+                            <Text style={styles.backButtonText}>View detail of box</Text>
+                        </Pressable>
                         <Pressable style={styles.backButton} onPress={() => {
                             setModalVisible(false);
                             router.push('/'); // Navigate back to home
