@@ -1,5 +1,4 @@
 import React, {useCallback, useEffect, useState} from "react";
-//import FloatingActionButton from "@/components/fab";
 import FloatingActionButton from "@/components/AddButton";
 import {router} from "expo-router";
 import {Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
@@ -83,7 +82,6 @@ export default function Index() {
     const [boxes, setBoxes] = useState<box[]>([]);
     const [categories, setCategories] = useState<category[]>([]);
     const [locations, setLocations] = useState<location[]>([]);
-    const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
 
     const onEdit = (id: number) => {
         router.push(`/boxes/edit?boxId=${id}`);
@@ -108,7 +106,6 @@ export default function Index() {
         try {
             await db.deleteBox(id);
 
-            // Aggiorna lo stato rimuovendo l'elemento
             setBoxes((prevBoxes: any) => prevBoxes.filter((box: any) => box.id !== id));
         } catch (err) {
             console.log(err);
@@ -173,7 +170,6 @@ export default function Index() {
                 }
             });
         });
-        setIsInitialLoadComplete(true);
     }, []);
 
     const fetchBoxes = async () => {
@@ -187,12 +183,22 @@ export default function Index() {
         }
     };
 
+    const [isTablesCreated, setIsTablesCreated] = useState(false);
+
     useFocusEffect(
         useCallback(() => {
-            if (isInitialLoadComplete) {
-                fetchBoxes();
-            }
-        }, [])
+            const initializeAndFetch = async () => {
+                if (!isTablesCreated) {
+                    // Create tables if not already created
+                    await db.createTables();
+                    setIsTablesCreated(true);
+                }
+                // Fetch boxes regardless of whether tables were just created or already existed
+                await fetchBoxes();
+            };
+
+            initializeAndFetch();
+        }, [isTablesCreated])
     );
 
     const addPresetCategories = () => {
