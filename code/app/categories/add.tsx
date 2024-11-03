@@ -1,4 +1,4 @@
-import {Button, StyleSheet, TextInput, Text, View, TouchableOpacity} from "react-native";
+import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {useState} from "react";
 import * as db from "@/services/database";
 import {NavigationProp, useNavigation} from "@react-navigation/native";
@@ -104,6 +104,7 @@ const AddCategoryScreen = () => {
         <View style={styles.container}>
             <Text style={styles.text}>Name</Text>
             <TextInput
+                autoFocus
                 placeholder="Enter category name"
                 value={name}
                 onChangeText={setName}

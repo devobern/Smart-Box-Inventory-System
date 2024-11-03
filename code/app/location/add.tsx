@@ -104,6 +104,7 @@ const AddLocationScreen = () => {
         <View style={styles.container}>
             <Text style={styles.text}>Name</Text>
             <TextInput
+                autoFocus
                 style={styles.inputText}
                 value={locationName}
                 onChangeText={setLocationName}
