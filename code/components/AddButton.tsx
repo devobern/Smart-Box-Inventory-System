@@ -40,28 +40,40 @@ export default function FloatingActionButton() {
             {isExpanded && (
                 <Animated.View style={[styles.secondaryButton, { transform: [{ translateY: btn1Position }] }]}>
                     <TouchableOpacity style={styles.button} onPress={() => router.push(`/boxes/add`)}>
-                        <Ionicons name="cube-outline" size={24} color="white" />
+                        <View style={styles.iconTextContainer}>
+                            <Ionicons name="cube-outline" size={24} color="white" />
+                            <Text style={styles.buttonText}>Box</Text>
+                        </View>
                     </TouchableOpacity>
                 </Animated.View>
             )}
             {isExpanded && (
                 <Animated.View style={[styles.secondaryButton, { transform: [{ translateY: btn2Position }] }]}>
                     <TouchableOpacity style={styles.button} onPress={() => router.push(`/location/add`)}>
-                        <Ionicons name="location-outline" size={24} color="white" />
+                        <View style={styles.iconTextContainer}>
+                            <Ionicons name="location-outline" size={24} color="white" />
+                            <Text style={styles.buttonText}>Location</Text>
+                        </View>
                     </TouchableOpacity>
                 </Animated.View>
             )}
             {isExpanded && (
                 <Animated.View style={[styles.secondaryButton, { transform: [{ translateY: btn3Position }] }]}>
                     <TouchableOpacity style={styles.button} onPress={() => router.push(`/categories/add`)}>
-                        <Ionicons name="list-outline" size={24} color="white" />
+                        <View style={styles.iconTextContainer}>
+                            <Ionicons name="list-outline" size={24} color="white" />
+                            <Text style={styles.buttonText}>Category</Text>
+                        </View>
                     </TouchableOpacity>
                 </Animated.View>
             )}
             {isExpanded && (
                 <Animated.View style={[styles.secondaryButton, { transform: [{ translateY: btn4Position }] }]}>
                     <TouchableOpacity style={styles.button} onPress={() => router.push(`/items/add`)}>
-                        <Ionicons name="pricetag-outline" size={24} color="white" />
+                        <View style={styles.iconTextContainer}>
+                            <Ionicons name="pricetag-outline" size={24} color="white" />
+                            <Text style={styles.buttonText}>Item</Text>
+                        </View>
                     </TouchableOpacity>
                 </Animated.View>
             )}
@@ -73,12 +85,6 @@ export default function FloatingActionButton() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        position: "absolute",
-        bottom: 30,
-        right: 30,
-        alignItems: "center",
-    },
     mainButton: {
         width: 60,
         height: 60,
@@ -90,17 +96,27 @@ const styles = StyleSheet.create({
     },
     secondaryButton: {
         position: "absolute",
-        width: 50,
-        height: 50,
-        borderRadius: 25,
+        width: 80,
+        height: 60,
+        borderRadius: 30,
         backgroundColor: "#6eb9f7",
         alignItems: "center",
         justifyContent: "center",
+        alignSelf: "center",
     },
     button: {
         width: "100%",
         height: "100%",
         alignItems: "center",
         justifyContent: "center",
+    },
+    iconTextContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 10,
+        marginTop: 4,
     },
 });
