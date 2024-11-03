@@ -93,7 +93,7 @@ export default function Index() {
 
 
     const onEdit = (id: number) => {
-        router.push(`/boxes/edit?id=${id}`); // NOT WORKING YET!
+        router.push(`/boxes/edit?boxId=${id}`);
     };
 
     const onDelete = (id: number) => {
@@ -252,7 +252,6 @@ export default function Index() {
                         <List.Item
                             onPress={() => router.push(`/boxes/details?id=${item.id}`)}
                             title={item.name}
-                            description={item.description}
                             left={() => <Image source={require("@/assets/images/box.png")} style={{ width: 24, height: 24 }} />}
                             right={() => <Image source={require("@/assets/images/arrow_forward_ios.png")} style={{ width: 24, height: 24 }} />}
                         />

@@ -9,8 +9,6 @@ import { Picker } from '@react-native-picker/picker';
 export default function AddBox() {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [creationDate, setcDate] = useState(new Date());
-    const [updateDate, setuDate] = useState(new Date());
     const [modalVisible, setModalVisible] = useState(false);
     const [boxId, setBoxId] = useState<string | null>(null);
     const [locationId, setLocationId] = useState<string>('');
@@ -38,7 +36,7 @@ export default function AddBox() {
             alert('Please provide a name and select a location.');
             return;
         }
-        DB.addBox(name, parseInt(locationId)).then((id) => {
+        DB.addBox(name, description, parseInt(locationId)).then((id) => {
             setBoxId(String(id)); // Set the ID for the QR code and show the modal
             setModalVisible(true);
         });

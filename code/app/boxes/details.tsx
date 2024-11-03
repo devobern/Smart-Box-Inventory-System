@@ -17,7 +17,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         padding: 10,
         marginTop: 10,
-        marginBottom: 10,
+    },
+    description: {
+        fontSize: 14,
+        color: '#555',
+        padding: 10,
     },
     listItem: {
         backgroundColor: "white",
@@ -86,6 +90,8 @@ export default function BoxDetails() {
     const [modalVisible, setModalVisible] = useState(false);
     const [items, setItems] = useState<Item[]>([]);
     const [boxName, setBoxName] = useState<string>("Untitled");
+    const [boxDescription, setBoxDescription] = useState<string>("Untitled");
+    const [boxLocation, setBoxLocation] = useState<string>("Untitled");
     let qrCodeRef: any = null;
 
     useEffect(() => {
@@ -98,6 +104,12 @@ export default function BoxDetails() {
             const box = await db.getBox(Number(id));
             if (box) {
                 setBoxName(box.name);
+                setBoxDescription(box.description);
+                const location = await db.getLocation(box.locationId);
+                if (location){
+                    setBoxLocation(location.name);
+                }
+
             }
         };
 
@@ -116,7 +128,12 @@ export default function BoxDetails() {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>Box Description:</Text>
+            <Text style={styles.description}>{boxDescription}</Text>
+            <Text style={styles.title}>Box Location:</Text>
+            <Text style={styles.description}>{boxLocation}</Text>
             <Text style={styles.title}>Your Items in box {boxName}:</Text>
+
             <FlatList
                 data={items}
                 keyExtractor={(item) => item.id.toString()}
