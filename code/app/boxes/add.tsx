@@ -5,15 +5,33 @@ import * as DB from "@/services/database";
 import { router } from "expo-router";
 import * as Print from "expo-print";
 import { Picker } from '@react-native-picker/picker';
+import { Item } from "../types/item";
+import { box } from "../types/box";
 
 export default function AddBox() {
-    const [name, setName] = useState('');
+
+    const [name, setName] = useState('New Box');
     const [description, setDescription] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
     const [boxId, setBoxId] = useState<string | null>(null);
-    const [locationId, setLocationId] = useState<string>('');
+    const [locationId, setLocationId] = useState<string>('1');
     const [locations, setLocations] = useState<{ id: number; name: string; }[]>([]);
+    
     let qrCodeRef: any = null; // Declare qrCodeRef as a variable
+    DB.getBoxes().then((boxes) => {
+        if (boxes !== null) {
+            let ids = boxes.map((box) => Number((box as box).id))
+            if (name == 'New Box') {
+                if (ids.length <= 0) {
+                    // Edge case: First ever registered box
+                    setName(`Box 1`)
+                }
+                else {
+                    setName(`Box ${Math.max(...ids) + 1}`)
+                }
+            }
+        }
+    });
 
     useEffect(() => {
         const fetchLocations = async () => {
@@ -126,7 +144,7 @@ export default function AddBox() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Name</Text>
+            <Text style={styles.text}>Name *</Text>
             <TextInput
                 placeholder="Name"
                 value={name}
@@ -140,7 +158,7 @@ export default function AddBox() {
                 onChangeText={setDescription}
                 style={styles.inputText}
             />
-            <Text style={styles.text}>Location</Text>
+            <Text style={styles.text}>Location *</Text>
             <Picker
                 selectedValue={locationId}
                 style={styles.inputText}

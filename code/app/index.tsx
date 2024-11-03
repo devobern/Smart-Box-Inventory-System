@@ -136,6 +136,7 @@ export default function Index() {
     ];
 
     const presetLocations = [
+        { name: "General" },
         { name: "Living room" },
         { name: "Bath" },
         { name: "Kitchen" },
