@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useCallback} from "react";
 //import FloatingActionButton from "@/components/fab";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import FloatingActionButton from "@/components/AddButton";
 import { router } from "expo-router";
 import {
@@ -142,6 +143,20 @@ export default function Index() {
         { name: "Bedroom" },
         { name: "Basement" },
     ];
+
+    // Check if onboarding is needed and navigate accordingly
+    
+    useEffect(() => {
+        const checkOnboardingStatus = async () => {
+            const hasSeenOnboarding = await AsyncStorage.getItem("hasSeenOnboarding");
+            if (!hasSeenOnboarding) {
+                router.push("/onboarding/onboarding");
+            }
+        };
+        
+        checkOnboardingStatus();
+    }, []);
+    
 
     useEffect(() => {
         console.log('Here!');
