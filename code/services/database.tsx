@@ -40,6 +40,7 @@ export const createTables = async () => {
         CREATE TABLE IF NOT EXISTS box (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
+            description TEXT,
             created DATETIME NOT NULL,
             updated DATETIME NOT NULL,
             locationId INTEGER NOT NULL,
@@ -487,18 +488,20 @@ export const getItems = async (): Promise<unknown[] | null> => {
  */
 export const addBox = async (
   name: string,
+  description: string,
   locationId: number,
   boxGroupId?: number
 ): Promise<number | null> => {
   const db = await openDatabase();
   const statement = await db.prepareAsync(
-    `INSERT INTO box (name, created, updated, locationId, boxGroupId) VALUES ($name, $created, $updated, $locationId, $boxGroupId)`
+    `INSERT INTO box (name, description, created, updated, locationId, boxGroupId) VALUES ($name, $description, $created, $updated, $locationId, $boxGroupId)`
   );
   try {
     const date = new Date().toISOString();
     // @ts-ignore
     const result = await statement.executeAsync({
       $name: name,
+      $description: description,
       $created: date,
       $updated: date,
       $locationId: locationId,
@@ -519,12 +522,13 @@ export const addBox = async (
 export const updateBox = async (
   id: number,
   name: string,
+  description: string,
   locationId: number,
   boxGroupId?: number
 ): Promise<number | null> => {
   const db = await openDatabase();
   const statement = await db.prepareAsync(
-    `UPDATE box SET name = $name, updated = $updated, locationId = $locationId, boxGroupId = $boxGroupId WHERE id = $id`
+    `UPDATE box SET name = $name, description = $description, updated = $updated, locationId = $locationId, boxGroupId = $boxGroupId WHERE id = $id`
   );
   try {
     const date = new Date().toISOString();
@@ -532,6 +536,7 @@ export const updateBox = async (
     const result = await statement.executeAsync({
       $id: id,
       $name: name,
+      $description: description,
       $updated: date,
       $locationId: locationId,
       $boxGroupId: boxGroupId,
