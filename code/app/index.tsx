@@ -1,26 +1,15 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import FloatingActionButton from "@/components/AddButton";
-import { router } from "expo-router";
-import {
-    Alert,
-    FlatList,
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import {router} from "expo-router";
+import {Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
 import * as db from "../services/database";
-import { box } from "./types/box";
-import { category } from "@/app/types/category";
-import { location } from "@/app/types/location";
-import { useFocusEffect } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
-import { List } from "react-native-paper";
-import {
-    GestureHandlerRootView,
-    Swipeable,
-} from "react-native-gesture-handler";
+import {box} from "./types/box";
+import {category} from "@/app/types/category";
+import {location} from "@/app/types/location";
+import {useFocusEffect} from "@react-navigation/native";
+import {Ionicons} from "@expo/vector-icons";
+import {List} from "react-native-paper";
+import {GestureHandlerRootView, Swipeable,} from "react-native-gesture-handler";
 
 const styles = StyleSheet.create({
     item: {
@@ -93,59 +82,71 @@ export default function Index() {
     const [boxes, setBoxes] = useState<box[]>([]);
     const [categories, setCategories] = useState<category[]>([]);
     const [locations, setLocations] = useState<location[]>([]);
+    const [initialized, setInitialized] = useState(false); // Added initialized state variable
 
     const onEdit = (id: number) => {
         router.push(`/boxes/edit?boxId=${id}`);
     };
 
     const onDelete = (id: number) => {
-        Alert.alert("Confirm Delete", "Are you sure you want to delete this box?", [
-            { text: "Cancel", style: "cancel" },
-            {
-                text: "Delete",
-                style: "destructive",
-                onPress: () => handleDelete(id),
-            },
-        ]);
+        Alert.alert(
+            "Confirm Delete",
+            "Are you sure you want to delete this box?",
+            [
+                {text: "Cancel", style: "cancel"},
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: () => handleDelete(id),
+                },
+            ]
+        );
     };
 
     const handleDelete = async (id: number) => {
         try {
             await db.deleteBox(id);
-            setBoxes((prevBoxes: any) => prevBoxes.filter((box: any) => box.id !== id));
+            setBoxes((prevBoxes: any) =>
+                prevBoxes.filter((box: any) => box.id !== id)
+            );
         } catch (err) {
             console.log(err);
         }
     };
 
     const presetCategories = [
-        { name: "Miscellaneous" },
-        { name: "Electronics" },
-        { name: "Home Appliances" },
-        { name: "Books" },
-        { name: "Clothing" },
-        { name: "Sports Equipment" },
-        { name: "Beauty & Personal Care" },
-        { name: "Toys & Games" },
-        { name: "Furniture" },
-        { name: "Groceries" },
-        { name: "Automotive Parts" },
+        {name: "Miscellaneous"},
+        {name: "Electronics"},
+        {name: "Home Appliances"},
+        {name: "Books"},
+        {name: "Clothing"},
+        {name: "Sports Equipment"},
+        {name: "Beauty & Personal Care"},
+        {name: "Toys & Games"},
+        {name: "Furniture"},
+        {name: "Groceries"},
+        {name: "Automotive Parts"},
     ];
 
     const presetLocations = [
-        { name: "General" },
-        { name: "Living room" },
-        { name: "Bath" },
-        { name: "Kitchen" },
-        { name: "Bedroom" },
-        { name: "Basement" },
+        {name: "General"},
+        {name: "Living room"},
+        {name: "Bath"},
+        {name: "Kitchen"},
+        {name: "Bedroom"},
+        {name: "Basement"},
     ];
 
     const initializeData = async () => {
-        await db.createTables();
-        await fetchBoxes();
-        await fetchCategories();
-        await fetchLocations();
+        try {
+            await db.createTables();
+            setInitialized(true); // Tables are now created
+            await fetchCategories();
+            await fetchLocations();
+            await fetchBoxes();
+        } catch (error) {
+            console.error("Error initializing data:", error);
+        }
     };
 
     const fetchBoxes = async () => {
@@ -213,17 +214,19 @@ export default function Index() {
 
     useFocusEffect(
         useCallback(() => {
-            fetchBoxes();
-        }, [])
+            if (initialized) {
+                fetchBoxes();
+            }
+        }, [initialized])
     );
 
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <View style={{ flex: 1 }}>
+        <GestureHandlerRootView style={{flex: 1}}>
+            <View style={{flex: 1}}>
                 <FlatList
                     data={boxes}
                     keyExtractor={(item, index) => `${item.id}`}
-                    renderItem={({ item }) => (
+                    renderItem={({item}) => (
                         <Swipeable
                             renderLeftActions={() => (
                                 <TouchableOpacity
@@ -251,13 +254,13 @@ export default function Index() {
                                     left={() => (
                                         <Image
                                             source={require("@/assets/images/box.png")}
-                                            style={{ width: 24, height: 24 }}
+                                            style={{width: 24, height: 24}}
                                         />
                                     )}
                                     right={() => (
                                         <Image
                                             source={require("@/assets/images/arrow_forward_ios.png")}
-                                            style={{ width: 24, height: 24 }}
+                                            style={{width: 24, height: 24}}
                                         />
                                     )}
                                 />
@@ -266,14 +269,14 @@ export default function Index() {
                     )}
                 />
                 <View style={styles.container_r}>
-                    <FloatingActionButton />
+                    <FloatingActionButton/>
                 </View>
                 <View style={styles.container_l}>
                     <TouchableOpacity
                         style={styles.btn}
                         onPress={() => router.push(`/scanner`)}
                     >
-                        <Ionicons name="scan-outline" size={30} color="white" />
+                        <Ionicons name="scan-outline" size={30} color="white"/>
                     </TouchableOpacity>
                 </View>
             </View>
