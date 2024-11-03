@@ -1,6 +1,6 @@
 import FloatingActionButton from "@/components/fab";
-import { useEffect, useState } from "react";
-import { FlatList, Text, View, StyleSheet } from "react-native";
+import {useEffect, useState} from "react";
+import {FlatList, StyleSheet, Text, View} from "react-native";
 import * as db from "@/services/database";
 
 const styles = StyleSheet.create({
@@ -50,7 +50,7 @@ export default function Index() {
             <FlatList
                 data={items}
                 keyExtractor={(item) => item?.id?.toString()}
-                renderItem={({ item }) => (
+                renderItem={({item}) => (
                     <View style={styles.listItem}>
                         <Text style={styles.itemName}>Name: {item?.name}</Text>
                         <Text>Quantity: {item?.quantity}</Text>
@@ -58,7 +58,7 @@ export default function Index() {
                     </View>
                 )}
             />
-            <FloatingActionButton route="/items/add" />
+            <FloatingActionButton route="/items/add"/>
         </View>
     );
 }

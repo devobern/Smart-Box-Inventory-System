@@ -1,11 +1,11 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Image } from "react-native";
+import React, {useCallback, useEffect, useState} from "react";
+import {Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import FloatingActionButton from "@/components/AddButton";
-import { useFocusEffect, router } from "@react-navigation/native";
+import {router, useFocusEffect} from "@react-navigation/native";
 import * as db from "@/services/database";
-import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
-import { Ionicons } from "@expo/vector-icons";
-import { List } from "react-native-paper";
+import {GestureHandlerRootView, Swipeable} from "react-native-gesture-handler";
+import {Ionicons} from "@expo/vector-icons";
+import {List} from "react-native-paper";
 
 const LocationsOverview = () => {
     const [locations, setLocations] = useState<Array<{ id: number; name: string }>>([]);
@@ -44,8 +44,8 @@ const LocationsOverview = () => {
             "Confirm Delete",
             "Are you sure you want to delete this location?",
             [
-                { text: "Cancel", style: "cancel" },
-                { text: "Delete", style: "destructive", onPress: () => handleDelete(id) }
+                {text: "Cancel", style: "cancel"},
+                {text: "Delete", style: "destructive", onPress: () => handleDelete(id)}
             ]
         );
     };
@@ -59,7 +59,7 @@ const LocationsOverview = () => {
         }
     };
 
-    const renderLocationItem = ({ item }: { item: { id: number; name: string } }) => (
+    const renderLocationItem = ({item}: { item: { id: number; name: string } }) => (
         <Swipeable
             renderLeftActions={() => (
                 <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => onDelete(item.id)}>
@@ -77,25 +77,26 @@ const LocationsOverview = () => {
             <View style={styles.listItemContainer}>
                 <List.Item
                     title={item.name}
-                    left={() => <Image source={require("@/assets/images/location.png")} style={{ width: 24, height: 24 }} />}/>
+                    left={() => <Image source={require("@/assets/images/location.png")}
+                                       style={{width: 24, height: 24}}/>}/>
             </View>
         </Swipeable>
     );
 
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <View style={{ flex: 1 }}>
+        <GestureHandlerRootView style={{flex: 1}}>
+            <View style={{flex: 1}}>
                 <FlatList
                     data={locations}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderLocationItem}
                 />
                 <View style={styles.container_r}>
-                    <FloatingActionButton route="/location/add" />
+                    <FloatingActionButton route="/location/add"/>
                 </View>
                 <View style={styles.container_l}>
                     <TouchableOpacity style={styles.btn} onPress={() => router.push(`/scanner`)}>
-                        <Ionicons name="scan-outline" size={30} color="white" />
+                        <Ionicons name="scan-outline" size={30} color="white"/>
                     </TouchableOpacity>
                 </View>
             </View>
