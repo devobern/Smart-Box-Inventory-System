@@ -1,17 +1,22 @@
 import FloatingActionButton from "@/components/fab";
 import { router, useLocalSearchParams } from 'expo-router';
-import {FlatList, Text, View, StyleSheet, Pressable, Modal, Image, TouchableOpacity} from "react-native";
+import { FlatList, Text, View, StyleSheet, Pressable, Modal, Image, TouchableOpacity, Alert } from "react-native";
 import * as db from "@/services/database";
 import { Item } from "@/app/types/item";
 import QRCode from "react-native-qrcode-svg";
 import React, { useEffect, useState } from "react";
 import * as Print from "expo-print";
-import {Ionicons, MaterialIcons} from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { List } from "react-native-paper";
+import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    backButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
     },
     title: {
         fontSize: 18,
@@ -27,27 +32,17 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         padding: 20,
     },
-    itemName: {
-        fontWeight: 'bold',
-        fontSize: 16,
-    },
-    linkText: {
-        color: 'blue',
-        fontSize: 16,
-        marginTop: 16,
-        textDecorationLine: 'underline',
-    },
     qrButton: {
-        alignSelf: 'flex-start', // Align button to the left
-        flexDirection: 'row', // Display icon and text in a row
-        alignItems: 'center', // Center icon and text vertically
+        alignSelf: 'flex-start',
+        flexDirection: 'row',
+        alignItems: 'center',
         padding: 16,
         backgroundColor: '#007bff',
     },
     qrButtonText: {
         color: 'white',
         fontSize: 16,
-        marginLeft: 8, // Space between icon and text
+        marginLeft: 8,
     },
     modalContainer: {
         flex: 1,
@@ -77,10 +72,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'grey',
         borderRadius: 5,
     },
-    backButtonText: {
-        color: 'white',
-        fontWeight: 'bold',
-    },
     mainButton: {
         width: 60,
         height: 60,
@@ -101,6 +92,23 @@ const styles = StyleSheet.create({
         bottom: 30,
         left: 30,
         alignItems: "center",
+    },
+    actionButton: {
+        justifyContent: "center",
+        alignItems: "center",
+        width: 80,
+        height: "100%",
+    },
+    editButton: {
+        backgroundColor: "#4CAF50",
+    },
+    deleteButton: {
+        backgroundColor: "#F44336",
+    },
+    actionText: {
+        color: "white",
+        fontSize: 16,
+        fontWeight: "bold",
     },
 });
 
@@ -125,10 +133,9 @@ export default function BoxDetails() {
                 setBoxName(box.name);
                 setBoxDescription(box.description);
                 const location = await db.getLocation(box.locationId);
-                if (location){
+                if (location) {
                     setBoxLocation(location.name);
                 }
-
             }
         };
 
@@ -145,8 +152,57 @@ export default function BoxDetails() {
         }
     };
 
+    const onEdit = (itemId: number) => {
+        router.push(`/items/edit?itemId=${itemId}`);
+    };
+
+    const onDelete = (itemId: number) => {
+        Alert.alert(
+            "Confirm Delete",
+            "Are you sure you want to delete this item?",
+            [
+                { text: "Cancel", style: "cancel" },
+                { text: "Delete", style: "destructive", onPress: () => handleDelete(itemId) }
+            ]
+        );
+    };
+
+    const handleDelete = async (itemId: number) => {
+        try {
+            await db.deleteItem(itemId); // Ensure this function exists in your db service
+            setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+        } catch (err) {
+            console.log("Error deleting item:", err);
+        }
+    };
+
+    const renderItem = ({ item }: { item: Item }) => (
+        <Swipeable
+            renderLeftActions={() => (
+                <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => onDelete(item.id)}>
+                    <Text style={styles.actionText}>Delete</Text>
+                </TouchableOpacity>
+            )}
+            renderRightActions={() => (
+                <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => onDelete(item.id)}>
+                    <Text style={styles.actionText}>Delete</Text>
+                </TouchableOpacity>
+            )}
+            overshootLeft={false}
+            overshootRight={false}
+        >
+            <List.Item style={styles.listItem}
+                       onPress={() => router.push(`/items/details?itemId=${item.id}`)}
+                       title={item.name}
+                       description={item.description}
+                       left={() => <Image source={require("@/assets/images/item.png")} style={{ width: 24, height: 24 }} />}
+                       right={() => <Image source={require("@/assets/images/arrow_forward_ios.png")} style={{ width: 24, height: 24 }} />}
+            />
+        </Swipeable>
+    );
+
     return (
-        <View style={styles.container}>
+        <GestureHandlerRootView style={styles.container}>
             <Text style={styles.title}>Box Description:</Text>
             <Text style={styles.description}>{boxDescription}</Text>
             <Text style={styles.title}>Box Location:</Text>
@@ -156,15 +212,7 @@ export default function BoxDetails() {
             <FlatList
                 data={items}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <List.Item style={styles.listItem}
-                        onPress={() => router.push(`/items/details?itemId=${item.id}`)}
-                        title={item.name}
-                        description={item.description}
-                        left={() => <Image source={require("@/assets/images/item.png")} style={{ width: 24, height: 24 }} />}
-                        right={() => <Image source={require("@/assets/images/arrow_forward_ios.png")} style={{ width: 24, height: 24 }} />}
-                    />
-                )}
+                renderItem={renderItem}
             />
             <View style={styles.container_l}>
                 <Pressable style={styles.qrButton} onPress={() => setModalVisible(true)}>
@@ -173,7 +221,7 @@ export default function BoxDetails() {
                 </Pressable>
             </View>
             <View style={styles.container_r}>
-                <TouchableOpacity style={styles.mainButton} onPress={() => router.push(`/boxes/add`)}>
+                <TouchableOpacity style={styles.mainButton} onPress={() => router.push(`/items/add?boxId=${id}`)}>
                     <Ionicons name="add" size={24} color="white" />
                 </TouchableOpacity>
             </View>
@@ -201,6 +249,6 @@ export default function BoxDetails() {
                     </View>
                 </View>
             </Modal>
-        </View>
+        </GestureHandlerRootView>
     );
 }
