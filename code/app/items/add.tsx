@@ -114,7 +114,7 @@ export default function Screen() {
           setItemQuantity("1"); // Reset to default quantity
           setItemPhotoUrl("");
           setErrorMessage(""); // Clear any existing error messages
-          router.push(`/boxes/details?id=${newItem.boxId}`);
+          router.replace(`/boxes/details?id=${newItem.boxId}`);
         } else {
           console.error("Failed to add item");
         }
