@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#E7E0EC",
+    backgroundColor: "#cfe8fc",
     borderRadius: 28,
     height: 48,
     paddingHorizontal: 16,
@@ -22,9 +22,9 @@ const styles = StyleSheet.create({
     right: 16,
   },
   containerFocused: {
-    backgroundColor: "#F7F2FA", // MD3 lighter surface variant when focused
+    backgroundColor: "#e7f3fe", // MD3 lighter surface variant when focused
     borderWidth: 1,
-    borderColor: "#6750A4", // MD3 primary color
+    borderColor: "#2196F3", // MD3 primary color,
   },
   searchIcon: {
     height: 24,
@@ -55,7 +55,7 @@ export default function Searchbox({ onSearch, onChangeText }: SearchboxProps) {
   const [query, setQuery] = useState("");
 
   return (
-    <SafeAreaView style={{ width: "100%", paddingLeft: 16, paddingRight: 16 }}>
+    <SafeAreaView style={{ width: "100%", paddingLeft: 16, paddingRight: 16 , marginTop: 20}}>
       <View style={[styles.container, isFocused && styles.containerFocused]}>
         <Image
           source={require("@/assets/images/search.png")}
